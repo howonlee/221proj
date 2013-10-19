@@ -16,26 +16,32 @@ def getNoteColor(note):
     r = (notehash & 0xFF0000) >> 16
     g = (notehash & 0x00FF00) >> 8
     b = (notehash & 0x0000FF)
-    print "r: ", r
-    print "g: ", g
-    print "b: ", b
     return pygame.Color(r, g, b)
 
 mousex, mousey = 0, 0
 currNoteState = [0, 0, 0]
 keyRects = []
 for note, val in enumerate(currNoteState):
-    top = ((winHeight / len(currNoteState)) * note) + 5
-    left = (winWidth / 4) * 3
+    left = ((winHeight / len(currNoteState)) * note) + 5
+    top = (winWidth / 4) * 3
     width = 50
     height = 20
-    keyRects.append([note, [top, left, width, height]])
+    keyRects.append([note, [left, top, width, height]])
 currNoteMapping = {K_a : 0, K_s : 1, K_d : 2}
 allNotes = []
-noteRects = [] #note, (top, left, width, height)
+noteRects = [] #note, (left, top, width, height)
+
+def updatePyRects():
+    global noteRects
+    for rect in noteRects:
+        note = rect[0]
+        rect[1][1] -= 1 #move top up
+        if not currNoteState[note]:
+            rect[1][3] += 1 #increase height
 
 while True:
     windowSurfaceObj.fill(blackColor)
+    updatePyRects()
     for rect in keyRects:
         pygame.draw.rect(windowSurfaceObj, getNoteColor(rect[0]), rect[1])
     for rect in noteRects:
@@ -52,6 +58,8 @@ while True:
                 note = [noteNum, pygame.time.get_ticks(), -1]
                 allNotes.append(note)
                 print note
+                keyRect = keyRects[noteNum][:] #a full copy
+                noteRects.append(keyRect)
             if event.key == K_ESCAPE:
                 pygame.event.post(pygame.event.Event(QUIT))
         elif event.type == KEYUP:
