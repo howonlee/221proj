@@ -13,6 +13,10 @@ greenColor = pygame.Color(0, 255, 0)
 blueColor = pygame.Color(0, 0, 255)
 whiteColor = pygame.Color(255, 255, 255)
 mousex, mousey = 0, 0
+currNoteState = [0, 0, 0]
+currNoteMapping = {K_a : 0, K_s : 1, K_d : 2}
+allNotes = []
+rectDir = (100, 0, 0, 30) #top, left, width, height
 
 while True:
     windowSurfaceObj.fill(blackColor)
@@ -21,21 +25,16 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-        elif event.type == MOUSEMOTION:
-            mousex, mousey = event.pos
-        elif event.type == MOUSEBUTTONUP:
-            if event.button in (1, 2, 3):
-                print "mouse click"
-            if event.button in (4, 5):
-                print "scroll mouse"
-
         elif event.type == KEYDOWN:
-            if event.key in (K_LEFT, K_RIGHT, K_UP, K_DOWN):
-                print "Arrow key"
-            if event.key == K_a:
-                print "a pressed"
+            if event.key in currNoteMapping:
+                currNoteState[currNoteMapping[event.key]] = 1
+                print currNoteMapping[event.key], " : ", currNoteState[currNoteMapping[event.key]]
             if event.key == K_ESCAPE:
                 pygame.event.post(pygame.event.Event(QUIT))
+        elif event.type == KEYUP:
+            if event.key in currNoteMapping:
+                currNoteState[currNoteMapping[event.key]] = 0
+                print currNoteMapping[event.key], " : ", currNoteState[currNoteMapping[event.key]]
 
     pygame.display.update()
     fpsClock.tick(60)
