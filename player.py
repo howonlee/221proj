@@ -4,9 +4,9 @@ from pygame.locals import *
 pygame.init()
 fpsClock = pygame.time.Clock()
 
-winHeight = 640
-winWidth = 640
-windowSurfaceObj = pygame.display.set_mode((winHeight, winWidth))
+winHeight = 900
+winWidth = 1440
+windowSurfaceObj = pygame.display.set_mode((winWidth, winHeight))
 pygame.display.set_caption('Music Player')
 
 blackColor = pygame.Color(0, 0, 0)
@@ -18,17 +18,17 @@ def getNoteColor(note):
     b = (notehash & 0x0000FF)
     return pygame.Color(r, g, b)
 def makeNoteRect(note, height):
-    left = ((winHeight / len(currNoteState)) * note) + 5
-    top = (winWidth / 4) * 3
+    left = ((winWidth / len(currNoteState)) * note) + 5
+    top = (winHeight / 5) * 4
     width = 50
     return [note, [left, top, width, height]]
 
 mousex, mousey = 0, 0
-currNoteState = [0, 0, 0]
+currNoteState = [0] * 12
 keyRects = []
 for note, val in enumerate(currNoteState):
     keyRects.append(makeNoteRect(note, 20))
-currNoteMapping = {K_a : 0, K_s : 1, K_d : 2}
+currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_e : 3, K_d: 4, K_f: 5, K_j: 6, K_i: 7, K_k: 8, K_o: 9, K_l: 10, K_SEMICOLON:11}
 allNotes = []
 noteRects = [] #note, (left, top, width, height)
 
