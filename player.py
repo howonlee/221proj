@@ -27,14 +27,22 @@ while True:
             sys.exit()
         elif event.type == KEYDOWN:
             if event.key in currNoteMapping:
-                currNoteState[currNoteMapping[event.key]] = 1
-                print currNoteMapping[event.key], " : ", currNoteState[currNoteMapping[event.key]]
+                noteNum = currNoteMapping[event.key]
+                currNoteState[noteNum] = 1
+                print noteNum, " : ", currNoteState[noteNum]
+                note = [noteNum, pygame.time.get_ticks(), -1]
+                allNotes.append(note)
+                print note
             if event.key == K_ESCAPE:
                 pygame.event.post(pygame.event.Event(QUIT))
         elif event.type == KEYUP:
             if event.key in currNoteMapping:
-                currNoteState[currNoteMapping[event.key]] = 0
-                print currNoteMapping[event.key], " : ", currNoteState[currNoteMapping[event.key]]
+                noteNum = currNoteMapping[event.key]
+                currNoteState[noteNum] = 0
+                print noteNum, " : ", currNoteState[noteNum]
+                lastNote = next(x for x in reversed(allNotes) if x[0] == noteNum)
+                lastNote[2] = pygame.time.get_ticks()
+                print lastNote
 
     pygame.display.update()
     fpsClock.tick(60)
