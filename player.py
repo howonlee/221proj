@@ -3,7 +3,8 @@ from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 
 pygame.init()
-pygame.mixer.init(frequency=44100, channels=16)
+pygame.mixer.init(frequency=44100, buffer=1024)
+pygame.mixer.set_num_channels(16)
 fpsClock = pygame.time.Clock()
 
 winHeight = 900
