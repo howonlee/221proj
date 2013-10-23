@@ -19,18 +19,8 @@ def getNoteColor(note):
 
 def initSoundMappings():
     soundMappings = {}
-    soundMappings[0] = pygame.mixer.Sound("data/sin_c.wav")
-    soundMappings[1] = pygame.mixer.Sound("data/sin_csh.wav")
-    soundMappings[2] = pygame.mixer.Sound("data/sin_d.wav")
-    soundMappings[3] = pygame.mixer.Sound("data/sin_dsh.wav")
-    soundMappings[4] = pygame.mixer.Sound("data/sin_e.wav")
-    soundMappings[5] = pygame.mixer.Sound("data/sin_f.wav")
-    soundMappings[6] = pygame.mixer.Sound("data/sin_fsh.wav")
-    soundMappings[7] = pygame.mixer.Sound("data/sin_g.wav")
-    soundMappings[8] = pygame.mixer.Sound("data/sin_gsh.wav")
-    soundMappings[9] = pygame.mixer.Sound("data/sin_a.wav")
-    soundMappings[10] = pygame.mixer.Sound("data/sin_ash.wav")
-    soundMappings[11] = pygame.mixer.Sound("data/sin_b.wav")
+    for i in range(numNotes):
+        soundMappings[i] = pygame.sndarray.make_sound(bufs[i])
     return soundMappings
 
 def makeNoteRect(note, height):
@@ -52,13 +42,15 @@ def updateNoteRects(noteRects, currNoteState):
 """
 NOTE TONE GENERATION
 """
-freq = 440
+freqs = [523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.0, 932.32, 987.76]
 duration = 1.0 #seconds
 sample_rate = 44100
 n_samples = int(round(duration * sample_rate))
-buf = numpy.zeros((n_samples, 2), dtype=numpy.int16)
-max_sample = 2 ** (16 - 1) - 1
-for s in range(n_samples):
-    t = float(s) / sample_rate #time in seconds
-    buf[s][0] = int(round(max_sample*math.sin(2*math.pi*freq*t)))
-    buf[s][1] = int(round(max_sample*math.sin(2*math.pi*freq*t)))
+bufs = []
+for i in range(numNotes):
+    bufs.append(numpy.zeros((n_samples, 2), dtype=numpy.int16))
+    max_sample = 2 ** (16 - 1) - 1
+    for s in range(n_samples):
+        t = float(s) / sample_rate #time in seconds
+        bufs[i][s][0] = int(round(max_sample*math.tan(2*math.pi*freqs[i]*t)))
+        bufs[i][s][1] = int(round(max_sample*math.tan(2*math.pi*freqs[i]*t)))

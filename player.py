@@ -31,8 +31,6 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
-            csound = pygame.sndarray.make_sound(utils.buf)
-            csound.play(loops=-1)
             if event.key in utils.currNoteMapping:
                 noteNum = utils.currNoteMapping[event.key]
                 currNoteState[noteNum] = 1
