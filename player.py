@@ -9,19 +9,14 @@ fpsClock = pygame.time.Clock()
 windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
 pygame.display.set_caption('Music Player')
 
-mousex, mousey = 0, 0
 currNoteState = [0] * utils.numNotes
 keyRects = []
 for note, val in enumerate(currNoteState):
     keyRects.append(utils.makeNoteRect(note, 20))
-currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_e : 3, K_d: 4, K_f: 5, K_j: 6, K_i: 7, K_k: 8, K_o: 9, K_l: 10, K_SEMICOLON:11}
-soundMapping = utils.initSoundMappings()
-#the midi mapping is for being a feature for the data
-midiNoteMapping = {0 : 74, 1: 75, 2: 76, 3: 77, 4: 78, 5: 79, 6: 80, 7: 81, 8: 82, 9: 83, 10: 84, 11: 85}
 allNotes = []
-
 modelRects = [] #(note, (left, top, width, height))
 noteRects = [] #(note, (left, top, width, height))
+soundMapping = utils.initSoundMappings()
 
 while True:
     windowSurfaceObj.fill(utils.blackColor)
@@ -36,8 +31,8 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
-            if event.key in currNoteMapping:
-                noteNum = currNoteMapping[event.key]
+            if event.key in utils.currNoteMapping:
+                noteNum = utils.currNoteMapping[event.key]
                 currNoteState[noteNum] = 1
                 print noteNum, " : ", currNoteState[noteNum]
                 note = [noteNum, pygame.time.get_ticks(), -1]
@@ -48,8 +43,8 @@ while True:
             if event.key == K_ESCAPE:
                 pygame.event.post(pygame.event.Event(QUIT))
         elif event.type == KEYUP:
-            if event.key in currNoteMapping:
-                noteNum = currNoteMapping[event.key]
+            if event.key in utils.currNoteMapping:
+                noteNum = utils.currNoteMapping[event.key]
                 currNoteState[noteNum] = 0
                 print noteNum, " : ", currNoteState[noteNum]
                 lastNote = next(x for x in reversed(allNotes) if x[0] == noteNum)

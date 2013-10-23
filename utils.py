@@ -6,6 +6,9 @@ winWidth = 1440
 numNotes = 12
 blackColor = pygame.Color(0, 0, 0)
 whiteColor = pygame.Color(255, 255, 255)
+currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_e : 3, K_d: 4, K_f: 5, K_j: 6, K_i: 7, K_k: 8, K_o: 9, K_l: 10, K_SEMICOLON:11}
+#the midi mapping is for being a feature for the data
+midiNoteMapping = {0 : 74, 1: 75, 2: 76, 3: 77, 4: 78, 5: 79, 6: 80, 7: 81, 8: 82, 9: 83, 10: 84, 11: 85}
 
 def getNoteColor(note):
     notehash = ((note + 5) * 2654435761) % (2 ** 32)
