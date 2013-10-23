@@ -4,8 +4,8 @@ import pygame.midi
 
 pygame.init()
 pygame.midi.init()
-player = pygame.midi.output(0)
-player.set_instrument(0) #grand piano
+#player = pygame.midi.output(0)
+#player.set_instrument(0) #grand piano
 fpsClock = pygame.time.Clock()
 
 winHeight = 900
@@ -68,7 +68,7 @@ while True:
                 allNotes.append(note)
                 print note
                 noteRects.append(makeNoteRect(noteNum, 1))
-                player.note_on(midiNoteMapping[noteNum], 127)
+                #player.note_on(midiNoteMapping[noteNum], 127)
             if event.key == K_ESCAPE:
                 pygame.event.post(pygame.event.Event(QUIT))
         elif event.type == KEYUP:
@@ -78,7 +78,7 @@ while True:
                 print noteNum, " : ", currNoteState[noteNum]
                 lastNote = next(x for x in reversed(allNotes) if x[0] == noteNum)
                 lastNote[2] = pygame.time.get_ticks()
-                player.note_off(midiNoteMapping[noteNum], 127)
+                #player.note_off(midiNoteMapping[noteNum], 127)
                 print lastNote
 
     pygame.display.update()
