@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, numpy, math
 from pygame.locals import *
 
 winHeight = 900
@@ -48,3 +48,17 @@ def updateNoteRects(noteRects, currNoteState):
             lastRect = next(x for x in reversed(noteRects) if x[0] == note)
             lastRect[1][3] += 1 #increase height
     return noteRects
+
+"""
+NOTE TONE GENERATION
+"""
+freq = 440
+duration = 1.0 #seconds
+sample_rate = 44100
+n_samples = int(round(duration * sample_rate))
+buf = numpy.zeros((n_samples, 2), dtype=numpy.int16)
+max_sample = 2 ** (16 - 1) - 1
+for s in range(n_samples):
+    t = float(s) / sample_rate #time in seconds
+    buf[s][0] = int(round(max_sample*math.sin(2*math.pi*freq*t)))
+    buf[s][1] = int(round(max_sample*math.sin(2*math.pi*freq*t)))

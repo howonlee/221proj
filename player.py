@@ -3,7 +3,7 @@ from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 
 pygame.init()
-pygame.mixer.init(frequency=44100, buffer=1024)
+pygame.mixer.init(44100, -16, 2, buffer=8192)
 pygame.mixer.set_num_channels(16)
 fpsClock = pygame.time.Clock()
 windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
@@ -31,6 +31,8 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
+            csound = pygame.sndarray.make_sound(utils.buf)
+            csound.play(loops=-1)
             if event.key in utils.currNoteMapping:
                 noteNum = utils.currNoteMapping[event.key]
                 currNoteState[noteNum] = 1
