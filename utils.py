@@ -52,5 +52,5 @@ for i in range(numNotes):
     max_sample = 2 ** (16 - 1) - 1
     for s in range(n_samples):
         t = float(s) / sample_rate #time in seconds
-        bufs[i][s][0] = int(round(max_sample*math.tan(2*math.pi*freqs[i]*t)))
-        bufs[i][s][1] = int(round(max_sample*math.tan(2*math.pi*freqs[i]*t)))
+        bufs[i][s][0] = int(round(max_sample*(math.cos(2*math.pi*freqs[i]*t)) ** 20))
+        bufs[i][s][1] = int(round(max_sample*(math.cos(2*math.pi*freqs[i]*t)) ** 20))
