@@ -6,7 +6,7 @@ winWidth = 1440
 numNotes = 36
 blackColor = pygame.Color(0, 0, 0)
 whiteColor = pygame.Color(255, 255, 255)
-currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_i:6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
+currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_u: 6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
 #the midi mapping is for being a feature for the data
 midiNoteMapping = {}
 for i in range(67, 97):
@@ -33,7 +33,7 @@ def initSoundMappings():
     return soundMappings
 
 def makeNoteRect(note, height):
-    left = ((winWidth / 12) * note) + 5
+    left = ((winWidth / 13) * note) + 5
     top = (winHeight / 5) * 4
     width = 50
     return [note, [left, top, width, height]]
