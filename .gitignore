@@ -4,5 +4,6 @@ exes/*
 *.pdf
 *.aux
 *.log
+*.out
 *.gz
 .DS_STORE
