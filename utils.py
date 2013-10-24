@@ -18,11 +18,15 @@ def argmax(pairs):
 def argmax_iter(vals):
     return argmax(enumerate(vals))
 
-def getNoteColor(note):
+def getNoteColor(note, isHighlighted):
     notehash = ((note + 5) * 2654435761) % (2 ** 32)
     r = (notehash & 0xFF0000) >> 16
     g = (notehash & 0x00FF00) >> 8
     b = (notehash & 0x0000FF)
+    if (isHighlighted):
+        r = min(255, r + 30)
+        g = min(255, g + 30)
+        b = min(255, b + 30)
     return pygame.Color(r, g, b)
 
 def initSoundMappings():
@@ -33,9 +37,9 @@ def initSoundMappings():
     return soundMappings
 
 def makeNoteRect(note, height):
-    left = ((winWidth / 13) * note) + 5
+    left = ((winWidth / 30) * note) + 5
     top = (winHeight / 5) * 4
-    width = 50
+    width = 25
     return [note, [left, top, width, height]]
 
 def updateNoteRects(noteRects, currNoteState):
