@@ -10,6 +10,28 @@
 \author{howon lee}
 \maketitle
 \section*{Note recommendation for the musician in performance}
+
+\begin{figure}
+\begin{tabular}{c c c c c c c c c c c c c}
+C4 & C\# & D & D\# & E & F & F\# & G & G\# & A & A\# & B & C5\\
+\hline
+19 & 0 & 0 & 0 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+3  & 0 & 0 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+23 & 0 & 0 & 0 & 0 & 2 & 0 & 0 & 3 & 0 & 0 & 0 & 0\\
+3  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+30 & 0 & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+21 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+4  & 0 & 0 & 0 & 0 & 2 & 0 & 0 & 3 & 0 & 0 & 0 & 0\\
+19 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+2  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+19 & 0 & 0 & 0 & 0 & 6 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+0  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+21 & 0 & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+17 & 0 & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+\end{tabular}
+\caption{Confusion matrix for a piano player on NB classifier}
+\end{figure}
+
 \subsection*{Task Definition}
 The system will take in computer keyboard input and play music as if it were a MIDI keyboard. This by itself is not too terribly impressive, but what it should also do is to give suggestions in real-time for what notes to play, for the player who want a little bit of help improvising.
 
@@ -23,13 +45,26 @@ I have implemented the keyboard music part of the system. I will be using the pr
 
 In order to test this, I got a piano player friend of mine to play it in the current incarnation.
 
-For a baseline, I just set up a multinomial Naive Bayes classifier to choose the best note prediction, given the previous notes. The performance was not good: the classifier did as good as random when predicting what note the player would next hit (that is, 8\% accuracy with 12 notes), which is understandable, as there is no attempt to model any attribute of what the player's doing, and no state which is remembered. This system also only predicts the next note to play.
+For a baseline, I just set up a multinomial Naive Bayes classifier to choose the best note prediction, given the previous notes. The performance was not good: the classifier on the JS Bach dataset only predicted that the next note would be C, F or G sharp(see the confusion matrix for details). This is understandable, as there is no attempt to model any attribute of what the player's doing, and no state which is remembered. This system also only predicts the next note to play, where there should be information about the time, the rhythm, and things of that nature.
 
-You can download the baseline from github:
+You can keep track of the development at github:
 
 \url{https://github.com/howonlee/221proj}
 
-\subsection*{Literature}
-People do music generation, and they do real-time recommendations from reinforcement learning, but I haven't seen much of the combination of the two. Therefore, this literature review deals with these two domains.
+\begin{thebibliography}{9}%no more than 9 references
+
+\bibitem{BoulangerLewandowski12}
+N Boulanger-Lewandowsky, Y. Bengio and P. Vincent, Modeling Temporal Dependencies in High-Dimensional Sequences: Application to Polyphonic Music Generation and Transcription, in Proceedings of the 29th International Conference on Machine Learning (ICML), 2012.
+
+\bibitem{Rabiner}
+L. Rabiner, A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition, in Proceeding of the IEEE, 1989.
+
+\bibitem{Watkins}
+C. Watkins, Technical Note on Q-Learning, in Machine Learning, 1992.
+
+\bibitem{Rummery}
+N. Taghipour, A. Kardan, A Hybrid Web Recommender System Based on Q-Learning, in the 8th ACM Sympsium on Applied Computing, 2008
+
+\end{thebibliography}
 
 \end{document}
