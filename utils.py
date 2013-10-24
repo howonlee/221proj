@@ -13,6 +13,11 @@ for i in range(67, 97):
     midiNoteMapping[i - 72] = i
 reverseMidiNoteMapping = dict((v,k) for k,v in midiNoteMapping.items())
 
+def argmax(pairs):
+    return max(pairs, key=operator.itemgetter(1))[0]
+def argmax_iter(vals):
+    return argmax(enumerate(vals))
+
 def getNoteColor(note):
     notehash = ((note + 5) * 2654435761) % (2 ** 32)
     r = (notehash & 0xFF0000) >> 16

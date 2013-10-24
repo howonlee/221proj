@@ -1,4 +1,4 @@
-import pygame, sys, utils
+import pygame, sys, utils, model
 from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 
