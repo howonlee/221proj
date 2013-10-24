@@ -21,7 +21,7 @@ soundMapping = utils.initSoundMappings()
 #MODELS#
 prevPred = -1
 confMatrix = []
-nbModel = model.trainNB(model.nottingham["train"])
+nbModel = model.trainNB(model.jsb["train"])
 
 def doNB(allNotes):
     nbdata = []

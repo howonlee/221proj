@@ -1,15 +1,15 @@
-import collections, operator, cPickle, utils, math
+import collections, operator, cPickle, utils, math, random
 
 """
 muse = cPickle.load(file("./data/MuseData.pickle"))
 print "finished loading muse..."
-jsb = cPickle.load(file("./data/JSB Chorales.pickle"))
-print "finished loading jsb..."
 pianomidi = cPickle.load(file("./data/Piano-midi.de.pickle"))
 print "finished loading pianomidi..."
-"""
 nottingham = cPickle.load(file("./data/Nottingham.pickle"))
 print "finished loading nottingham..."
+"""
+jsb = cPickle.load(file("./data/JSB Chorales.pickle"))
+print "finished loading jsb..."
 
 #this is a multinomial NB
 def trainNB(data):
@@ -32,7 +32,7 @@ def trainNB(data):
     for i in range(67, 97):
         for j in condprob[i]:
             condprob[i][j] = math.log(condprob[i][j] / prior[i]) #currently, priors are just counts
-        prior[i] = math.log(prior[i] + 1 / float(N + 30))
+        prior[i] = math.log(prior[i] / float(N))
     return (prior, condprob)
 
 def sigmoid(x):
@@ -45,7 +45,9 @@ def makeNBPred(datapoint, prior, condprob):
         for t in datapoint:
             classes[i] += condprob[i][t]
     v = list(classes.values())
-    v = map(sigmoid, v)
+    #v = map(sigmoid, v)
+    #v = map(sample, v)
+    print v
     k = list(classes.keys())
     arg = k[v.index(max(v))]
     return arg
