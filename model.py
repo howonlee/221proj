@@ -46,8 +46,5 @@ def makeNBPred(datapoint, prior, condprob):
     v = map(sigmoid, v)
     k = list(classes.keys())
     arg = k[v.index(max(v))]
-    print "classes: ", v
-    print "logl: ", classes[arg]
-    print "arg: ", arg
     return arg
 
