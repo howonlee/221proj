@@ -9,7 +9,7 @@ fpsClock = pygame.time.Clock()
 windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
 pygame.display.set_caption('Music Player')
 
-currNoteState = [0] * 12
+currNoteState = [0] * 30
 keyRects = []
 for note, val in enumerate(currNoteState):
     keyRects.append(utils.makeNoteRect(note, 20))

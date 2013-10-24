@@ -3,14 +3,14 @@ from pygame.locals import *
 
 winHeight = 900
 winWidth = 1440
-numNotes = 12
+numNotes = 36
 blackColor = pygame.Color(0, 0, 0)
 whiteColor = pygame.Color(255, 255, 255)
-currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_e : 3, K_d: 4, K_f: 5, K_j: 6, K_i: 7, K_k: 8, K_o: 9, K_l: 10, K_SEMICOLON:11}
+currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_i:6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
 #the midi mapping is for being a feature for the data
 midiNoteMapping = {}
 for i in range(67, 97):
-    midiNoteMapping[i - 72] = i
+    midiNoteMapping[i - 67] = i
 reverseMidiNoteMapping = dict((v,k) for k,v in midiNoteMapping.items())
 
 def argmax(pairs):
@@ -52,6 +52,7 @@ def updateNoteRects(noteRects, currNoteState):
 NOTE TONE GENERATION
 """
 freqs = [523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.0, 932.32, 987.76]
+freqs = freqs + map(lambda x: x * 2, freqs) + map(lambda x: x * 4, freqs)
 duration = 1.0 #seconds
 sample_rate = 44100
 n_samples = int(round(duration * sample_rate))
