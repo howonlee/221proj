@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\title{project ideas}
+\author{howon lee}
+\maketitle
+\section{Idea One: Programmer Productivity}
+Programmer productivity is usually hard to measure: if you look at lines of code, github commits, bugfixes done per day, average age of open issues, they are very very easy to game. But this also seems like a domain where very much can be learned, and perhaps a structure in the data could be found which would indicate programmer productivity while being harder to game than existing empirical-numerical measures. Because we also want to define who the good programmer is, this may be a semi-supervised ML task. There is a great datasource in github's data logs: they are archived in a data analytics-friendly format in githubarchive.org. The learned function would take in an individual programmer's git logs(git logs because githubarchive has that data: phabricator and JIRA data would be nice but is harder to get) and pop out a rating on several dimensions and an overall measure of how productive they've been. There may be some rule-based stuff to prevent gaming, too. It seems upon a lit search that scholarly thought about programmer productivity has mostly been non-computational after the downfall of programmer-measuring generally.
+
+\section{Idea Two: Recommender Systems for the Musician}
+I did a small lit search and I couldn't find anybody talking about recommender systems that recommend something for the musician to do in a performance. That is, a recommender system that pops up at a screen that a musician is looking at while making music and suggests a note or a musical phrase or something to play. Especially in structured but improvisational genres, this might be useful. People have done purely aleatoric (purely random) music before (some of them actual honest-to-god musicians, like John Cage), but I couldn't find anyone structuring the probability using machine learning techniques. This seems cool for the coolness of it and for the engineering challenge of making a really nice low-latency recommender system. There are plenty of datasources of MIDI music which would be suitable to such a thing, and music21 or something like it would be used for dealing with the music itself, along with a generative model. The learned function would take in the current state of the musician's performance (performance probably on a computer keyboard using stdin instead of a proper MIDI keyboard, since I'm cheap) and generate possible next notes.
+
+The other most interesting problem is how to deal with polyphony and dynamics, too, because it seems too easy to merely put data in a markov chain or something to deal with harmony: I have to go further than that, probably with other generative models.
+
+\end{document}
