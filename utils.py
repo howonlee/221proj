@@ -24,9 +24,9 @@ def getNoteColor(note, isHighlighted):
     g = (notehash & 0x00FF00) >> 8
     b = (notehash & 0x0000FF)
     if (isHighlighted):
-        r = min(255, r + 30)
-        g = min(255, g + 30)
-        b = min(255, b + 30)
+        r = 255
+        g = 255
+        b = 255
     return pygame.Color(r, g, b)
 
 def initSoundMappings():

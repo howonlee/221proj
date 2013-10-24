@@ -81,7 +81,9 @@ if __name__ == "__main__":
                 if event.key == K_ESCAPE:
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key == K_SPACE:
-                    np.savetxt(gObj.confMatFile, gObj.confMatrix, "%4d", delimiter=",")
+                    #this is so that the confusion matrix ends up
+                    #as an awesome latex matrix
+                    np.savetxt(gObj.confMatFile, gObj.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     gObj.turnNoteOn(noteNum)
