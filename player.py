@@ -1,4 +1,4 @@
-import pygame, sys, utils, model
+import pygame, sys, utils, model, operator
 from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 
@@ -17,6 +17,9 @@ allNotes = []
 modelRects = [] #(note, (left, top, width, height))
 noteRects = [] #(note, (left, top, width, height))
 soundMapping = utils.initSoundMappings()
+
+#MODELS#
+nbModel = model.trainNB(model.jsb["train"])
 
 while True:
     windowSurfaceObj.fill(utils.blackColor)
@@ -37,6 +40,12 @@ while True:
                 print noteNum, " : ", currNoteState[noteNum]
                 note = [noteNum, pygame.time.get_ticks(), -1]
                 allNotes.append(note)
+                nbdata = []
+                if (len(allNotes) > 5):
+                    nbData = map(operator.itemgetter(0), allNotes[-5:])
+                    nbData = map(lambda x: utils.midiNoteMapping[x], nbData)
+                    pred = model.makeNBPred(nbData, nbModel[0], nbModel[1])
+                    print "prediction: ", pred
                 print note
                 noteRects.append(utils.makeNoteRect(noteNum, 1))
                 soundMapping[noteNum].play(loops=-1)

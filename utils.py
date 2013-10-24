@@ -1,4 +1,4 @@
-import pygame, sys, numpy, math
+import pygame, sys, numpy, math, operator
 from pygame.locals import *
 
 winHeight = 900
@@ -29,6 +29,7 @@ def initSoundMappings():
     soundMappings = {}
     for i in range(numNotes):
         soundMappings[i] = pygame.sndarray.make_sound(bufs[i])
+        soundMappings[i].set_volume(0.05)
     return soundMappings
 
 def makeNoteRect(note, height):
