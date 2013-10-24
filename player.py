@@ -4,7 +4,7 @@ import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 
 class Game:
-    def __init__(self, showPredictions=True):
+    def __init__(self, showPredictions=True, confMatFile="./confmatrix.txt"):
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
@@ -17,6 +17,7 @@ class Game:
         self.soundMapping = utils.initSoundMappings()
         #MODELS#
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
+        self.confMatFile = confMatFile
         self.nbModel = model.trainNB(model.jsb["train"])
 
     def predictNB(self):
@@ -80,7 +81,7 @@ if __name__ == "__main__":
                 if event.key == K_ESCAPE:
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key == K_SPACE:
-                    print gObj.confMatrix
+                    np.savetxt(gObj.confMatFile, gObj.confMatrix, "%4d", delimiter=",")
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     gObj.turnNoteOn(noteNum)

@@ -6,4 +6,5 @@ exes/*
 *.log
 *.out
 *.gz
+confmatrix.txt
 .DS_STORE
