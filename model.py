@@ -33,6 +33,9 @@ def trainNB(data):
         prior[i] = math.log(prior[i] / float(N))
     return (prior, condprob)
 
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
 def makeNBPred(datapoint, prior, condprob):
     classes = collections.defaultdict(int)
     for i in range(67, 97):
@@ -40,9 +43,10 @@ def makeNBPred(datapoint, prior, condprob):
         for t in datapoint:
             classes[i] += condprob[i][t]
     v = list(classes.values())
+    v = map(sigmoid, v)
     k = list(classes.keys())
     arg = k[v.index(max(v))]
-    print "classes: ", classes
+    print "classes: ", v
     print "logl: ", classes[arg]
     print "arg: ", arg
     return arg
