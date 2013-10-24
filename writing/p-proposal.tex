@@ -1,26 +1,32 @@
 \documentclass{article}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[margin=1.0in]{geometry}
 
 \begin{document}
 \title{project proposal}
 \author{howon lee}
 \maketitle
-\section{Note recommendation for the musician in performance}
-\subsection{Task Definition}
-The system will take in computer keyboard input and play music as if it were a MIDI keyboard. This by itself is not too terribly impressive, but what it should also do is to give suggestions in real-time for what notes to play.
+\section*{Note recommendation for the musician in performance}
+\subsection*{Task Definition}
+The system will take in computer keyboard input and play music as if it were a MIDI keyboard. This by itself is not too terribly impressive, but what it should also do is to give suggestions in real-time for what notes to play, for the player who want a little bit of help improvising.
 
 There are two ways of looking at the task there: perhaps it is giving suggestions in real-time for what notes to play based upon a corpus of stored MIDI music data, in which case the actual task would be time series generation. Or perhaps it is being rewarded or punished by the person at the keyboard playing its notes, in which case it would be doing reinforcement learning.
 
-In either case, it seems to me that the best measurement for the success of the system will be the percentage of time that the person at the keyboard plays notes in accordance with the suggestions. If we look at the task as a time series generation, that ends up being the percentage of time that the person at the keyboard is in accordance with the generated time series. Of course there has to also be a large qualitative component in the aesthetics, but this is what we can put on a chart.
-\subsection{Baseline System}
+In either case, it seems to me that the best measurement for the success of the system will be the percentage of time that the person at the keyboard plays notes in accordance with the suggestions. If we look at the task as a time series generation, that ends up being the percentage of time that the person at the keyboard is in accordance with the generated time series. Of course there has to also be a large qualitative component in the aesthetics, but this is what we can put on a chart. Given that, the obvious next steps are putting a good time series generative model like hidden Markov models on it, and also to use a reinforcement learning model like Q-learning.
+\subsection*{Baseline System}
 I have implemented the keyboard music part of the system. I will be using the pre-cleaned piano-roll MIDI files from the LISA lab found here:
 http://www-etud.iro.umontreal.ca/~boulanni/icml2012
 
 In order to test this, I got a piano player friend of mine to look at it in the current incarnation.
 
-For a baseline, I just set up a multinomial Naive Bayes classifier to choose the best note prediction, given the previous notes. The performance was not good: the classifier did as good as random when predicting what note the player would next hit (that is, 8\% accuracy with 12 notes), which is understandable, as there is no attempt to model any attribute of what the player's doing, and no state which is remembered.
+For a baseline, I just set up a multinomial Naive Bayes classifier to choose the best note prediction, given the previous notes. The performance was not good: the classifier did as good as random when predicting what note the player would next hit (that is, 8\% accuracy with 12 notes), which is understandable, as there is no attempt to model any attribute of what the player's doing, and no state which is remembered. This system also only predicts the next note to play.
 
-\subsection{Literature}
+You can download the baseline from github:
+
+https://github.com/howonlee/221proj
+
+\subsection*{Literature}
+People do music generation, and they do real-time recommendations from reinforcement learning, but I haven't seen much of the combination of the two. Therefore, this literature review deals with these two domains.
 
 \end{document}
