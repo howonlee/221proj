@@ -21,7 +21,7 @@ soundMapping = utils.initSoundMappings()
 #MODELS#
 prevPred = -1
 confMatrix = []
-nbModel = model.trainNB(model.jsb["train"])
+nbModel = model.trainNB(model.nottingham["train"])
 
 def doNB(allNotes):
     nbdata = []
@@ -49,6 +49,7 @@ while True:
                 soundMapping[noteNum].play(loops=-1)
                 currNoteState[noteNum] = 1
                 print noteNum, " : ", currNoteState[noteNum]
+                print "current note: ", utils.midiNoteMapping[noteNum]
                 note = [noteNum, pygame.time.get_ticks(), -1]
                 allNotes.append(note)
                 doNB(allNotes)
