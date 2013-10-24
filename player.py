@@ -9,7 +9,7 @@ fpsClock = pygame.time.Clock()
 windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
 pygame.display.set_caption('Music Player')
 
-currNoteState = [0] * utils.numNotes
+currNoteState = [0] * 12
 keyRects = []
 for note, val in enumerate(currNoteState):
     keyRects.append(utils.makeNoteRect(note, 20))
@@ -19,6 +19,8 @@ noteRects = [] #(note, (left, top, width, height))
 soundMapping = utils.initSoundMappings()
 
 #MODELS#
+prevPred = -1
+confMatrix = []
 nbModel = model.trainNB(model.jsb["train"])
 
 while True:

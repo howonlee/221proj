@@ -33,7 +33,7 @@ def initSoundMappings():
     return soundMappings
 
 def makeNoteRect(note, height):
-    left = ((winWidth / numNotes) * note) + 5
+    left = ((winWidth / 12) * note) + 5
     top = (winHeight / 5) * 4
     width = 50
     return [note, [left, top, width, height]]
