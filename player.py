@@ -34,7 +34,7 @@ class Game:
         print "current note: ", utils.midiNoteMapping[noteNum]
         if True in self.predictionState:
             predicted = self.predictionState.index(True)
-            self.confMatrix[predicted, noteNum] += 1
+            self.confMatrix[noteNum, predicted] += 1
         note = [noteNum, pygame.time.get_ticks(), -1]
         print note
         self.noteRects.append(utils.makeNoteRect(noteNum, 1))
