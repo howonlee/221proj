@@ -1,9 +1,10 @@
-import pygame, sys, utils, model, operator, thread
+import pygame, sys, utils, model, operator
 from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 
 class Game:
-    def __init__(self):
+    def __init__(self, showPredictions=True):
+        self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
         self.keyRects = []
@@ -16,6 +17,32 @@ class Game:
         #MODELS#
         self.confMatrix = [] #for later
         self.nbModel = model.trainNB(model.jsb["train"])
+
+    def predictNB(self):
+        nbData = map(operator.itemgetter(0), self.allNotes[-5:])
+        nbData = map(lambda x: utils.midiNoteMapping[x], nbData)
+        pred = model.makeNBPred(nbData, self.nbModel[0], self.nbModel[1])
+        if (self.showPredictions):
+            self.predictionState = map(lambda x: False, self.predictionState)
+            self.predictionState[utils.reverseMidiNoteMapping[pred]] = True
+
+    def turnNoteOn(self, noteNum):
+        self.soundMapping[noteNum].play(loops=-1)
+        self.currNoteState[noteNum] = 1
+        print noteNum, " : ", self.currNoteState[noteNum]
+        print "current note: ", utils.midiNoteMapping[noteNum]
+        note = [noteNum, pygame.time.get_ticks(), -1]
+        print note
+        self.allNotes.append(note)
+        self.noteRects.append(utils.makeNoteRect(noteNum, 1))
+
+    def turnNoteOff(self, noteNum):
+        self.soundMapping[noteNum].stop()
+        self.currNoteState[noteNum] = 0
+        print noteNum, " : ", self.currNoteState[noteNum]
+        lastNote = next(x for x in reversed(self.allNotes) if x[0] == noteNum)
+        lastNote[2] = pygame.time.get_ticks()
+        print lastNote
 
 if __name__ == "__main__":
     pygame.init()
@@ -44,32 +71,14 @@ if __name__ == "__main__":
             elif event.type == KEYDOWN:
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
-                    gObj.soundMapping[noteNum].play(loops=-1)
-                    gObj.currNoteState[noteNum] = 1
-                    print noteNum, " : ", gObj.currNoteState[noteNum]
-                    print "current note: ", utils.midiNoteMapping[noteNum]
-                    note = [noteNum, pygame.time.get_ticks(), -1]
-                    gObj.allNotes.append(note)
-                    nbdata = []
+                    gObj.turnNoteOn(noteNum)
                     if (len(gObj.allNotes) > 5):
-                        nbData = map(operator.itemgetter(0), gObj.allNotes[-5:])
-                        nbData = map(lambda x: utils.midiNoteMapping[x], nbData)
-                        pred = model.makeNBPred(nbData, gObj.nbModel[0], gObj.nbModel[1])
-                        gObj.predictionState = map(lambda x: False, gObj.predictionState)
-                        gObj.predictionState[utils.reverseMidiNoteMapping[pred]] = True
-                        print "prediction: ", pred
-                    print note
-                    gObj.noteRects.append(utils.makeNoteRect(noteNum, 1))
+                        gObj.predictNB()
                 if event.key == K_ESCAPE:
                     pygame.event.post(pygame.event.Event(QUIT))
             elif event.type == KEYUP:
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
-                    gObj.soundMapping[noteNum].stop()
-                    gObj.currNoteState[noteNum] = 0
-                    print noteNum, " : ", gObj.currNoteState[noteNum]
-                    lastNote = next(x for x in reversed(gObj.allNotes) if x[0] == noteNum)
-                    lastNote[2] = pygame.time.get_ticks()
-                    print lastNote
+                    gObj.turnNoteOff(noteNum)
         pygame.display.update()
         fpsClock.tick(60)
