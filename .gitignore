@@ -1,3 +1,4 @@
 data/*
+exes/*
 *.pyc
 .DS_STORE
