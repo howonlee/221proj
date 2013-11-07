@@ -35,6 +35,12 @@ def trainNB(data):
         prior[i] = math.log(prior[i] / float(N))
     return (prior, condprob)
 
+def trainMM(data):
+    pass
+
+def trainHMM(data):
+    pass
+
 def sigmoid(x):
     return 1 / (1 + math.exp(-x))
 
@@ -50,4 +56,10 @@ def makeNBPred(datapoint, prior, condprob):
     k = list(classes.keys())
     arg = k[v.index(max(v))]
     return arg
+
+def makeMMPred(datapoint):
+    pass
+
+def makeHMMPred(datapoint):
+    pass
 

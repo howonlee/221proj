@@ -19,6 +19,8 @@ class Game:
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.confMatFile = confMatFile
         self.nbModel = model.trainNB(model.jsb["train"])
+        self.mmModel = model.trainMM(model.jsb["train"])
+        self.hmmModel = model.trainHMM(model.jsb["train"])
 
     def predict(self, model, fn):
         #curry into this function
@@ -29,7 +31,24 @@ class Game:
         self.predictionState[utils.reverseMidiNoteMapping[pred]] = True
 
     def predictNB(self):
+        """Naive Bayes"""
         self.predict(self.nbModel, model.makeNBPred)
+
+    def predictMM(self):
+        """A smoothed Markov model"""
+        self.predict(self.mmModel, model.makeMMPred)
+
+    def predictHMM(self):
+        """A hidden Markov model"""
+        self.predict(self.hmmModel, model.makeHMMPred)
+
+    def predictTD(self):
+        """Temporal Difference model"""
+        pass
+
+    def predictTDCC(self):
+        """Temporal Difference model with Cascade Correlation"""
+        pass
 
     def turnNoteOn(self, noteNum):
         self.soundMapping[noteNum].play(loops=-1)
