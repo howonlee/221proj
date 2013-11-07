@@ -36,10 +36,10 @@ def trainNB(data):
     return (prior, condprob)
 
 def trainMM(data):
-    pass
+    raise NotImplemented("Not implemented")
 
 def trainHMM(data):
-    pass
+    raise NotImplemented("Not implemented")
 
 def sigmoid(x):
     return 1 / (1 + math.exp(-x))
@@ -58,8 +58,8 @@ def makeNBPred(datapoint, prior, condprob):
     return arg
 
 def makeMMPred(datapoint):
-    pass
+    raise NotImplemented("Not implemented")
 
 def makeHMMPred(datapoint):
-    pass
+    raise NotImplemented("Not implemented")
 

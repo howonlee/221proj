@@ -35,12 +35,14 @@ class Game:
         self.predict(self.nbModel, model.makeNBPred)
 
     def predictMM(self):
-        """A smoothed Markov model"""
+        """A smoothed Markov model, simple as heck"""
         self.predict(self.mmModel, model.makeMMPred)
 
     def predictHMM(self):
         """A hidden Markov model"""
         self.predict(self.hmmModel, model.makeHMMPred)
+
+    ###implement up to here
 
     def predictTD(self):
         """Temporal Difference model"""
