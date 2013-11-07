@@ -20,12 +20,16 @@ class Game:
         self.confMatFile = confMatFile
         self.nbModel = model.trainNB(model.jsb["train"])
 
-    def predictNB(self):
-        nbData = map(operator.itemgetter(0), self.allNotes[-5:])
-        nbData = map(lambda x: utils.midiNoteMapping[x], nbData)
-        pred = model.makeNBPred(nbData, self.nbModel[0], self.nbModel[1])
+    def predict(self, model, fn):
+        #curry into this function
+        data = map(operator.itemgetter(0), self.allNotes[-5:])
+        data = map(lambda x: utils.midiNoteMapping[x], data)
+        pred = fn(data, model[0], model[1])
         self.predictionState = map(lambda x: False, self.predictionState)
         self.predictionState[utils.reverseMidiNoteMapping[pred]] = True
+
+    def predictNB(self):
+        self.predict(self.nbModel, model.makeNBPred)
 
     def turnNoteOn(self, noteNum):
         self.soundMapping[noteNum].play(loops=-1)
