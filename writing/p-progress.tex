@@ -23,7 +23,7 @@ It seems to be the case that the closest analogy to this task is word-completion
 be tested:
 
 \begin{enumerate}
-    \item It is the case that the models that people use for word-completion will work for this task.
+    \item It is the case that the models that people use for language modeling will work for this task.
     \item It is the case that reinforcment learning is a good AI paradigm for the task.
 \end{enumerate}
 
@@ -37,7 +37,7 @@ $$P_{IKN}(w_i | w_{i-1}) = \frac{C(w_{i-1}w_i) - D}{C(w_{i-1})} + \lambda (w_{i-
 
 Where $\lambda(w_{i-1})$ is a normalization constant, C is the count of the n-gram, D is a single discount optimized on held-out data, and $|\{v|C(vw_i) > 0\}|$ is the number of words that $v$ and $w_i$ can occur in the context of. See the Kneser-Ney and Goodman papers for details.
 
-This I will compare with no smoothing, additive smoothing, Katz smoothing and Jelinek-Mercer smoothing.
+This I will compare with no smoothing, additive smoothing, and Katz smoothing.
 
 By "Q-learning", I mean the model-free reinforcement learning technique. It seems tenable to back Q-learning with a table, since the state space for this model will not be complicated.
 
@@ -46,16 +46,26 @@ I have implemented the keyboard music part of the system. I will be using the pr
 
 \url{http://www-etud.iro.umontreal.ca/~boulanni/icml2012}
 
-Previously, I thought that Naive Bayes would do as a baseline, but the performance was so terrible (the classifier only predicted that the next note would be C, F or G all the time), that I will switch the baseline. For a baseline, I set up a HMM model to choose the best note prediction, learned by EM.
+Previously, I thought that Naive Bayes would do as a baseline, but the performance was so terrible (the classifier only predicted that the next note would be C, F or G all the time), that I will switch the baseline. For a baseline, I set up a HMM model learned by EM to generate the best note prediction.
 
 \subsection*{Further Development}
-In comparing language models, I am doing a simple 3-gram feature of the note pitch values, taking the pre-cleaned data, which is always transposed to C major. The way that I am testing the assumption that Kneser-Ney smoothing gives us better performance is by making a HMM model and comparing the performance of a variety of smoothing methods with the modified Kneser-Ney smoothing. It seems a settled empirical result that modified Kneser-Ney smoothing is the best smoothing method for language models, but that may not be the case for this task.
+In comparing language models, I am doing a simple 3-gram feature of the note pitch values, taking the pre-cleaned data, which is always transposed to C major. The way that I am testing the assumption that Kneser-Ney smoothing gives us better performance is by making a HMM model and comparing the performance of a variety of smoothing methods with the modified Kneser-Ney smoothing. It seems a settled empirical result that modified Kneser-Ney smoothing is a smoothing method
+which is better than the other smoothing models I am comparing it to (additive, etc) for language models, but that may not be the case for this task.
 
 The way that I am testing the assumption that reinforcement learning gives us better performance is by comparing an HMM model with a Q-learning model and seeing their respective performances. I haven't gotten to this part yet, but I have more features on the data. 
 
 In addition to an unsmoothed 3-gram feature of note pitch values, I also have note pitch differentials (the difference between a note and the note before it), the and the variance statistic on pitch.
 
 \begin{thebibliography}{9}%no more than 9 references
+
+\bibitem{KneserNey}
+Ney, H., et al., On Structuring Probabilistic Dependences in Stochastic Language Modeling, in Computer, Speech and Language, 1994
+
+\bibitem{Goodman}
+Goodman, J., A Bit of Progress in Language Modeling, in Computer Speech & Language, 2001
+
+\bibitem{JSymbolic}
+McKay, C., and Fujinaga, I., jSymbolic: A Feature Extractor for MIDI Files, in Proceedings of the International Computer Music Conference, 2006
 
 \bibitem{BoulangerLewandowski12}
 N Boulanger-Lewandowsky, Y. Bengio and P. Vincent, Modeling Temporal Dependencies in High-Dimensional Sequences: Application to Polyphonic Music Generation and Transcription, in Proceedings of the 29th International Conference on Machine Learning (ICML), 2012.
