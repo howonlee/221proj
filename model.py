@@ -82,9 +82,6 @@ def trainHMM(data):
 def trainQLearning(data):
     raise NotImplemented("Not implemented")
 
-def sigmoid(x):
-    return 1 / (1 + math.exp(-x))
-
 def makeNBPred(datapoint, prior, condprob):
     classes = collections.defaultdict(int)
     for i in range(67, 97):
