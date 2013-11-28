@@ -1,5 +1,6 @@
 import collections, operator, cPickle, utils, math, random
 import numpy as np
+import * from hmm
 
 """
 muse = cPickle.load(file("./data/MuseData.pickle"))
@@ -65,6 +66,16 @@ def trainMMOrder3(data):
     return (model, None)
 
 def trainHMM(data):
+    model = HMM(nStates, nObs)
+    for ls in data:
+        for quad in ls:
+            if (quad): #needed because some quads are null
+                for idx, q in enumerate(quad):
+                    if idx > 2:
+                        currNote = q - 67
+                        prevNote = quad[idx - 1] - 67
+                        prevNote2 = quad[idx - 2] - 67
+                        model[currNote, prevNote, prevNote2] += 1
     raise NotImplemented("Not implemented")
 
 def trainQLearning(data):
