@@ -1,6 +1,6 @@
 import collections, operator, cPickle, utils, math, random
 import numpy as np
-import * from hmm
+from hmm import HMM
 
 """
 muse = cPickle.load(file("./data/MuseData.pickle"))
@@ -14,6 +14,7 @@ jsb = cPickle.load(file("./data/JSB Chorales.pickle"))
 print "finished loading jsb..."
 
 #this is a multinomial NB
+#it is terrible at this task
 def trainNB(data):
     N = len(data)
     prior = collections.defaultdict(int)
@@ -66,6 +67,7 @@ def trainMMOrder3(data):
     return (model, None)
 
 def trainHMM(data):
+    raise NotImplemented("Not implemented")
     model = HMM(nStates, nObs)
     for ls in data:
         for quad in ls:
@@ -76,7 +78,6 @@ def trainHMM(data):
                         prevNote = quad[idx - 1] - 67
                         prevNote2 = quad[idx - 2] - 67
                         model[currNote, prevNote, prevNote2] += 1
-    raise NotImplemented("Not implemented")
 
 def trainQLearning(data):
     raise NotImplemented("Not implemented")
@@ -106,6 +107,9 @@ def makeMM3Pred(datapoint, model, _):
     prev2 = datapoint[-2] - 67
     val = np.argmax(model[:, prev1, prev2]) + 67
     return val
+
+def makeHMMPred(datapoint, model, _):
+    return 67
 
 def makeQLearningPred(datapoint, model, _):
     raise NotImplemented("Not implemented")
