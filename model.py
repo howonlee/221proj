@@ -1,6 +1,7 @@
 import collections, operator, cPickle, utils, math, random
 import numpy as np
 from hmm import HMM
+from q import QLearner
 
 """
 muse = cPickle.load(file("./data/MuseData.pickle"))
@@ -80,7 +81,11 @@ def trainHMM(data):
                         model[currNote, prevNote, prevNote2] += 1
 
 def trainQLearning(data):
-    raise NotImplemented("Not implemented")
+    actions = {}
+    #fill out actions here
+    q = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
+    #do some actual learning here
+    return (q, None)
 
 def makeNBPred(datapoint, prior, condprob):
     classes = collections.defaultdict(int)
@@ -109,5 +114,4 @@ def makeHMMPred(datapoint, model, _):
     return 67
 
 def makeQLearningPred(datapoint, model, _):
-    raise NotImplemented("Not implemented")
-
+    return model.chooseAction(datapoint)
