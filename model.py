@@ -21,7 +21,7 @@ def trainNB(data):
         condprob[i] = collections.defaultdict(lambda: 0.002)
     for ls in data:
         for quad in ls:
-            if (quad):
+            if (quad): #needed because some quads are null
                 for q in quad:
                     if q < 67 or q > 97: continue
                     prior[q] += 1
@@ -41,9 +41,8 @@ def trainMM(data):
     N = len(data)
     model = np.zeros((30, 30))
     for ls in data:
-        print "ls: ", ls
         for quad in ls:
-            if (quad):
+            if (quad): #needed because some quads are null
                 for idx, q in enumerate(quad):
                     if idx > 0:
                         currNote = q - 67
@@ -55,9 +54,8 @@ def trainMMOrder3(data):
     N = len(data)
     model = np.zeros((30, 30, 30))
     for ls in data:
-        print "ls: ", ls
         for quad in ls:
-            if (quad):
+            if (quad): #needed because some quads are null
                 for idx, q in enumerate(quad):
                     if idx > 2:
                         currNote = q - 67
@@ -67,6 +65,9 @@ def trainMMOrder3(data):
     return (model, None)
 
 def trainHMM(data):
+    raise NotImplemented("Not implemented")
+
+def trainQLearning(data):
     raise NotImplemented("Not implemented")
 
 def sigmoid(x):
@@ -95,6 +96,6 @@ def makeMM3Pred(datapoint, model, _):
     val = np.argmax(model[:, prev1, prev2]) + 67
     return val
 
-def makeHMMPred(datapoint):
+def makeQLearningPred(datapoint, model, _):
     raise NotImplemented("Not implemented")
 
