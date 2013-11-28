@@ -33,16 +33,13 @@ class HMM:
 
         #normalize and convert to log
         nplog = np.vectorize(self._convert_to_log)
-        self.pi = np.divide(self.pi, len(obs))
-        self.pi = nplog(self.pi)
+        self.pi = nplog(np.divide(self.pi, len(obs)))
         Zt = self.trans.sum(axis=1)
         Zt[Zt < 1] = 1
         Ze = self.emis.sum(axis=1)
         Ze[Ze < 1] = 1
-        self.trans = self.trans / Zt[:, np.newaxis]
-        self.trans = nplog(self.trans)
-        self.emis = self.emis / Ze[:, np.newaxis]
-        self.emis = nplog(self.emis)
+        self.trans = nplog(self.trans / Zt[:, np.newaxis])
+        self.emis = nplog(self.emis / Ze[:, np.newaxis])
 
     def _convert_to_log(self, val):
         if val > 0:
