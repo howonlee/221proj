@@ -33,15 +33,18 @@ class HMM:
 
         #normalize and convert to log
         nplog = np.vectorize(self._convert_to_log)
-        self.pi = nplog(np.divide(self.pi, len(obs)))
+        self.pi = np.divide(self.pi, len(obs))
+        self.pi = nplog(self.pi)
         Zt = self.trans.sum(axis=1)
         Zt[Zt < 1] = 1
         Ze = self.emis.sum(axis=1)
         Ze[Ze < 1] = 1
-        self.trans = nplog(self.trans / Zt[:, np.newaxis])
-        self.emis = nplog(self.emis / Ze[:, np.newaxis])
+        self.trans = self.trans / Zt[:, np.newaxis]
+        self.trans = nplog(self.trans)
+        self.emis = self.emis / Ze[:, np.newaxis]
+        self.emis = nplog(self.emis)
 
-    def _convert_to_log(val):
+    def _convert_to_log(self, val):
         if val > 0:
             return log(val)
         else:
@@ -71,9 +74,11 @@ class HMM:
                 assert(smax > -1 and smax < self.nStates)
                 tab[i, j] = self.emis[j, obs[i]] + maxval
                 backtrack[i, j] = smax
-        llike = np.amax(tab, axis=1)
+        llike = np.amin(np.amax(tab, axis=1))
+        print tab
         smax = np.argmax(tab, axis=1) #hopefully one argmax
-        assert(type(smax) == "int")
+        if (type(smax) != "int"):
+            smax = smax[0]
         #smax = -1
         #llike = float('-inf')
         #for s in range(self.nStates):
@@ -84,6 +89,6 @@ class HMM:
         best = np.zeros(len(obs))
         best.fill(-1)
         best[-1] = smax
-        for i in range(N-2, -1, -1):
+        for i in range(len(obs)-2, -1, -1):
             best[i] = backtrack[i+1, best[i+1]]
-        return best, llike
+        return list(best), llike
