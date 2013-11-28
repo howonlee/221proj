@@ -74,17 +74,10 @@ class HMM:
                 assert(smax > -1 and smax < self.nStates)
                 tab[i, j] = self.emis[j, obs[i]] + maxval
                 backtrack[i, j] = smax
-        llike = np.amin(np.amax(tab, axis=1))
-        print tab
+        llike = np.amax(tab[len(obs) - 1, :])
         smax = np.argmax(tab, axis=1) #hopefully one argmax
         if (type(smax) != "int"):
             smax = smax[0]
-        #smax = -1
-        #llike = float('-inf')
-        #for s in range(self.nStates):
-            #if llike < tab[len(obs) -1, s]:
-                #llike = tab[len(obs) - 1, s]
-                #smax = s
 
         best = np.zeros(len(obs))
         best.fill(-1)
