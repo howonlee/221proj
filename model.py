@@ -1,4 +1,5 @@
 import collections, operator, cPickle, utils, math, random
+import numpy as np
 
 """
 muse = cPickle.load(file("./data/MuseData.pickle"))
@@ -31,11 +32,29 @@ def trainNB(data):
                     condprob[classVal][q] += 1
     for i in range(67, 97):
         for j in condprob[i]:
+            #there exist smarter ways of normalizing...
             condprob[i][j] = math.log(condprob[i][j] / prior[i]) #currently, priors are just counts
         prior[i] = math.log(prior[i] / float(N))
     return (prior, condprob)
 
 def trainMM(data):
+    N = len(data)
+    model = np.zeros((30, 30))
+    for ls in data:
+        print "ls: ", ls
+        for quad in ls:
+            if (quad):
+                for idx, q in enumerate(quad):
+                    if idx > 0:
+                        currNote = q - 67
+                        prevNote = quad[idx - 1] - 67
+                        model[currNote, prevNote] += 1 #is this the right order?
+    print model
+    return (model, None)
+
+def trainMMOrder3(data):
+    N = len(data)
+    model = {}
     raise NotImplemented("Not implemented")
 
 def trainHMM(data):
@@ -51,14 +70,16 @@ def makeNBPred(datapoint, prior, condprob):
         for t in datapoint:
             classes[i] += condprob[i][t]
     v = list(classes.values())
-    #v = map(sigmoid, v)
-    #v = map(sample, v)
     k = list(classes.keys())
     arg = k[v.index(max(v))]
+    #is this right?
     return arg
 
-def makeMMPred(datapoint):
-    raise NotImplemented("Not implemented")
+def makeMMPred(datapoint, model, _):
+    last = datapoint[-1] - 67
+    val = np.argmax(model[last, :]) + 67
+    print "val for MM pred: ", val
+    return val
 
 def makeHMMPred(datapoint):
     raise NotImplemented("Not implemented")

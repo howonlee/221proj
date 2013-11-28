@@ -18,9 +18,10 @@ class Game:
         #MODELS#
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.confMatFile = confMatFile
-        self.nbModel = model.trainNB(model.jsb["train"])
         self.mmModel = model.trainMM(model.jsb["train"])
-        self.hmmModel = model.trainHMM(model.jsb["train"])
+        #self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
+        #self.hmmModel = model.trainHMM(model.jsb["train"])
+        #self.qModel = model.trainQLearning(model.jsb["train"])
 
     def predict(self, model, fn):
         #curry into this function
@@ -30,27 +31,21 @@ class Game:
         self.predictionState = map(lambda x: False, self.predictionState)
         self.predictionState[utils.reverseMidiNoteMapping[pred]] = True
 
-    def predictNB(self):
-        """Naive Bayes"""
-        self.predict(self.nbModel, model.makeNBPred)
-
     def predictMM(self):
-        """A smoothed Markov model, simple as heck"""
+        """A plain Markov model, simple as heck"""
         self.predict(self.mmModel, model.makeMMPred)
+
+    def predictMMOrder3(self):
+        """A plain Markov model, simple as heck"""
+        self.predict(self.mmModel3, model.makeMM3Pred)
 
     def predictHMM(self):
         """A hidden Markov model"""
         self.predict(self.hmmModel, model.makeHMMPred)
 
-    ###implement up to here
-
-    def predictTD(self):
-        """Temporal Difference model"""
-        pass
-
-    def predictTDCC(self):
-        """Temporal Difference model with Cascade Correlation"""
-        pass
+    def predictQLearning(self):
+        """A hidden Markov model"""
+        self.predict(self.qModel, model.makeQLearningPred)
 
     def turnNoteOn(self, noteNum):
         self.soundMapping[noteNum].play(loops=-1)
@@ -65,7 +60,7 @@ class Game:
         self.noteRects.append(utils.makeNoteRect(noteNum, 1))
         self.allNotes.append(note)
         if (len(self.allNotes) > 5):
-            self.predictNB()
+            self.predictMM()
 
     def turnNoteOff(self, noteNum):
         self.soundMapping[noteNum].stop()
