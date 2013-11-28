@@ -48,14 +48,23 @@ def trainMM(data):
                     if idx > 0:
                         currNote = q - 67
                         prevNote = quad[idx - 1] - 67
-                        model[currNote, prevNote] += 1 #is this the right order?
-    print model
+                        model[currNote, prevNote] += 1
     return (model, None)
 
 def trainMMOrder3(data):
     N = len(data)
-    model = {}
-    raise NotImplemented("Not implemented")
+    model = np.zeros((30, 30, 30))
+    for ls in data:
+        print "ls: ", ls
+        for quad in ls:
+            if (quad):
+                for idx, q in enumerate(quad):
+                    if idx > 2:
+                        currNote = q - 67
+                        prevNote = quad[idx - 1] - 67
+                        prevNote2 = quad[idx - 2] - 67
+                        model[currNote, prevNote, prevNote2] += 1
+    return (model, None)
 
 def trainHMM(data):
     raise NotImplemented("Not implemented")
@@ -77,8 +86,13 @@ def makeNBPred(datapoint, prior, condprob):
 
 def makeMMPred(datapoint, model, _):
     last = datapoint[-1] - 67
-    val = np.argmax(model[last, :]) + 67
-    print "val for MM pred: ", val
+    val = np.argmax(model[:, last]) + 67
+    return val
+
+def makeMM3Pred(datapoint, model, _):
+    prev1 = datapoint[-1] - 67
+    prev2 = datapoint[-2] - 67
+    val = np.argmax(model[:, prev1, prev2]) + 67
     return val
 
 def makeHMMPred(datapoint):

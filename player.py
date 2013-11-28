@@ -19,7 +19,7 @@ class Game:
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.confMatFile = confMatFile
         self.mmModel = model.trainMM(model.jsb["train"])
-        #self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
+        self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
         #self.hmmModel = model.trainHMM(model.jsb["train"])
         #self.qModel = model.trainQLearning(model.jsb["train"])
 
@@ -35,7 +35,7 @@ class Game:
         """A plain Markov model, simple as heck"""
         self.predict(self.mmModel, model.makeMMPred)
 
-    def predictMMOrder3(self):
+    def predictMM3(self):
         """A plain Markov model, simple as heck"""
         self.predict(self.mmModel3, model.makeMM3Pred)
 
@@ -60,7 +60,7 @@ class Game:
         self.noteRects.append(utils.makeNoteRect(noteNum, 1))
         self.allNotes.append(note)
         if (len(self.allNotes) > 5):
-            self.predictMM()
+            self.predictMM3()
 
     def turnNoteOff(self, noteNum):
         self.soundMapping[noteNum].stop()
