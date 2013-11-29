@@ -78,6 +78,7 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init(44100, -16, 2, buffer=512)
     pygame.mixer.set_num_channels(12)
+    pygame.time.set_timer(USEREVENT+1, 1000) #for saving data
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
     pygame.display.set_caption('Music Player')
@@ -95,10 +96,6 @@ if __name__ == "__main__":
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     pygame.event.post(pygame.event.Event(QUIT))
-                if event.key == K_SPACE:
-                    #this is so that the confusion matrix ends up
-                    #as an awesome latex matrix
-                    np.savetxt(gObj.confMatFile, gObj.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     gObj.turnNoteOn(noteNum)
@@ -106,5 +103,7 @@ if __name__ == "__main__":
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     gObj.turnNoteOff(noteNum)
+            elif event.type == USEREVENT + 1:
+                np.savetxt(gObj.confMatFile, gObj.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         pygame.display.update()
         fpsClock.tick(60)
