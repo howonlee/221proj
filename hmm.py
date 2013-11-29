@@ -35,13 +35,13 @@ class HMM:
 
         #normalize and convert to log
         nplog = np.vectorize(self._convert_to_log)
-        self.pi = np.divide(self.pi, len(obs))
+        self.pi = nplog(np.divide(self.pi, len(obs)))
         Zt = self.trans.sum(axis=1)
         Zt[Zt < 1] = 1
         Ze = self.emis.sum(axis=1)
         Ze[Ze < 1] = 1
-        self.trans = self.trans / Zt[:, np.newaxis]
-        self.emis = self.emis / Ze[:, np.newaxis]
+        self.trans = nplog(self.trans / Zt[:, np.newaxis])
+        self.emis = nplog(self.emis / Ze[:, np.newaxis])
 
     def _convert_to_log(self, val):
         if val > 0:
@@ -67,15 +67,10 @@ class HMM:
                 smax = -1
                 maxval = float('-inf')
                 for s in range(self.nStates):
-                    print "tab: ", tab[i - 1, s]
-                    print "trans: ", self.trans[s, j]
                     cs = tab[i - 1, s] + self.trans[s, j]
-                    print "cs: ", cs
-                    print "maxval: ", maxval
                     if cs > maxval:
                         smax = s
                         maxval = cs
-                print smax
                 assert(smax > -1 and smax < self.nStates)
                 tab[i, j] = self.emis[j, obs[i]] + maxval
                 backtrack[i, j] = smax
