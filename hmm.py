@@ -12,7 +12,7 @@ class HMM:
         self.nStates = nStates
         self.nObs = nObs
 
-    def learn(self, obs, ground_truth, reset=True):
+    def learn(self, obs, ground_truth, reset=True, smooth="Laplace", smoothParam = 0.1):
         """
         Learns from list of observation seq, and associated ground truths
         obs: list of list of ints in {0, ... nObs-1}, which is list of observed sequences.
@@ -32,8 +32,9 @@ class HMM:
                 self.emis[ ground[j], ob[j]] += 1
             j += 1
             self.emis[ ground[j], ob[j] ] += 1
-        print "transition matrix after learning, before normalizing: ", self.trans
-        print "emission matrix after learning, before normalizing: ", self.emis
+        if smooth == "Laplace":
+            self.trans = self.trans + smoothParam
+            self.emis = self.emis + smoothParam
 
         #normalize and convert to log
         nplog = np.vectorize(self._convert_to_log)
@@ -44,8 +45,6 @@ class HMM:
         Ze[Ze < 1] = 1
         self.trans = nplog(self.trans / Zt[:, np.newaxis])
         self.emis = nplog(self.emis / Ze[:, np.newaxis])
-        print "transition matrix after normalizing: ", self.trans
-        print "emission matrix after normalizing: ", self.emis
 
     def _convert_to_log(self, val):
         if val > 0:
