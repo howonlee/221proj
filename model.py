@@ -69,6 +69,7 @@ def trainMMOrder3(data):
 
 def trainHMM(data):
     """Todo: link into HMM class"""
+    """ next action: figure out how the hidden states in HMM will work """
     raise NotImplemented("Not implemented")
     model = HMM(nStates, nObs)
     for ls in data:
@@ -82,12 +83,19 @@ def trainHMM(data):
                         model[currNote, prevNote, prevNote2] += 1
 
 def trainQLearning(data):
-    """Todo: link into QLearner class"""
-    #we have to treat the q learner as having a state which it learns previously
-    actions = {}
-    #fill out actions here
+    actions = []
+    for i in range(67, 97):
+        actions.append(i)
     q = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
-    #do some actual learning here
+    for ls in data:
+        for quad in ls:
+            if (quad):
+                for idx, note in enumerate(quad):
+                    if idx > 1:
+                        currNote = note
+                        prevNote = quad[idx - 1]
+                        q.learn(prevNote, note, 1, note)
+                        #q.learn(state1, action1, reward, state2)
     return (q, None)
 
 def makeNBPred(datapoint, prior, condprob):
@@ -120,4 +128,5 @@ def makeHMMPred(datapoint, model, _):
     return best[-1]
 
 def makeQLearningPred(datapoint, model, _):
+    #do some learning here
     return model.chooseAction(datapoint)
