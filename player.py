@@ -4,11 +4,12 @@ import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 
 class Game:
-    def __init__(self, showPredictions=True, confMatFile="./confmatrix.txt"):
+    def __init__(self, showPredictions=True, predictor="MM", confMatFile="./confmatrix.txt"):
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
         self.keyRects = []
+        self.predictor = predictor
         for note, val in enumerate(self.currNoteState):
             self.keyRects.append(utils.makeNoteRect(note, utils.numNotes))
         self.allNotes = []
@@ -20,8 +21,18 @@ class Game:
         self.confMatFile = confMatFile
         self.mmModel = model.trainMM(model.jsb["train"])
         self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
-        #self.hmmModel = model.trainHMM(model.jsb["train"])
-        #self.qModel = model.trainQLearning(model.jsb["train"])
+        self.hmmModel = model.trainHMM(model.jsb["train"])
+        self.qModel = model.trainQLearning(model.jsb["train"])
+
+    def predictNotes(self):
+        if self.predictor == "MM":
+            self.predict(self.mmModel, model.makeMMPred)
+        elif self.predictor == "MM3":
+            self.predict(self.mmModel3, model.makeMM3Pred)
+        elif self.predictor == "HMM":
+            self.predict(self.hmmModel, model.makeHMMPred)
+        elif self.predictor == "Q":
+            self.predict(self.qModel, model.makeQLearningPred)
 
     def predict(self, model, fn):
         #curry into this function
@@ -30,22 +41,6 @@ class Game:
         pred = fn(data, model[0], model[1])
         self.predictionState = map(lambda x: False, self.predictionState)
         self.predictionState[utils.reverseMidiNoteMapping[pred]] = True
-
-    def predictMM(self):
-        """A plain Markov model, simple as heck"""
-        self.predict(self.mmModel, model.makeMMPred)
-
-    def predictMM3(self):
-        """A plain Markov model, simple as heck"""
-        self.predict(self.mmModel3, model.makeMM3Pred)
-
-    def predictHMM(self):
-        """A hidden Markov model"""
-        self.predict(self.hmmModel, model.makeHMMPred)
-
-    def predictQLearning(self):
-        """A hidden Markov model"""
-        self.predict(self.qModel, model.makeQLearningPred)
 
     def turnNoteOn(self, noteNum):
         self.soundMapping[noteNum].play(loops=-1)
@@ -60,7 +55,7 @@ class Game:
         self.noteRects.append(utils.makeNoteRect(noteNum, 1))
         self.allNotes.append(note)
         if (len(self.allNotes) > 5):
-            self.predictMM3()
+            self.predictNotes()
 
     def turnNoteOff(self, noteNum):
         self.soundMapping[noteNum].stop()
