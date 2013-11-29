@@ -81,6 +81,7 @@ def trainHMM(data):
                         model[currNote, prevNote, prevNote2] += 1
 
 def trainQLearning(data):
+    #we have to treat the q learner as having a state which it learns previously
     actions = {}
     #fill out actions here
     q = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
