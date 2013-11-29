@@ -25,6 +25,7 @@ class HMM:
         for i, ob in enumerate(obs):
             ground = ground_truth[i]
             assert(len(ob) == len(ground))
+            if len(ground) == 1: continue
             self.pi[ground[0]] += 1
             for j in range(len(ground) - 1):
                 self.trans[ ground[j], ground[j+1] ] += 1

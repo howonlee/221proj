@@ -79,7 +79,7 @@ def trainHMM(data):
     ground = []
     for ls in data:
         for quad in ls:
-            if (quad): #needed because some quads are null
+            if (len(quad) > 1): #needed because some quads are null
                 obs.append(map(lambda x: x - minNote, quad))
                 ground.append([quad[0] - minNote] * len(quad))
     print "=================== obs ==============="

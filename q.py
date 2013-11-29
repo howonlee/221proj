@@ -6,7 +6,7 @@ class QLearner:
         self.q = {}
         self.epsilon = epsilon
         self.alpha = alpha
-        self.gamme = gamma
+        self.gamma = gamma
         self.actions = actions
 
     def getQ(self, state, action):
