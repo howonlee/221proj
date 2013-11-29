@@ -71,17 +71,17 @@ def trainHMM(data):
     """Todo: link into HMM class"""
     """ next action: figure out how the hidden states in HMM will work """
     """ or maybe say that the hidden state is the first member of the quad? """
-    raise NotImplemented("Not implemented")
+    nStates = 30
+    nObs = 30
     model = HMM(nStates, nObs)
+    obs = []
+    ground = []
     for ls in data:
         for quad in ls:
             if (quad): #needed because some quads are null
-                for idx, q in enumerate(quad):
-                    if idx > 2:
-                        currNote = q - 67
-                        prevNote = quad[idx - 1] - 67
-                        prevNote2 = quad[idx - 2] - 67
-                        model[currNote, prevNote, prevNote2] += 1
+                obs.append(map(lambda x: x - 67, quad))
+                ground.append([quad[0] - 67] * len(quad))
+    model.learn(obs, ground) #this is a bit wrong
 
 def trainQLearning(data):
     actions = []
@@ -95,7 +95,7 @@ def trainQLearning(data):
                     if idx > 1:
                         currNote = note
                         prevNote = quad[idx - 1]
-                        q.learn(prevNote, note, 1, note)
+                        q.learn(prevNote, quad[0], 1, note) #this is a bit wrong
                         #q.learn(state1, action1, reward, state2)
     return (q, None)
 
@@ -108,7 +108,6 @@ def makeNBPred(datapoint, prior, condprob):
     v = list(classes.values())
     k = list(classes.keys())
     arg = k[v.index(max(v))]
-    #is this right?
     return arg
 
 def makeMMPred(datapoint, model, _):

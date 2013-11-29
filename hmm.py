@@ -12,7 +12,7 @@ class HMM:
         self.nStates = nStates
         self.nObs = nObs
 
-    def learn(self, obs, ground_truth):
+    def learn(self, obs, ground_truth, reset=True):
         """
         Learns from list of observation seq, and associated ground truths
         obs: list of list of ints in {0, ... nObs-1}, which is list of observed sequences.
@@ -20,7 +20,8 @@ class HMM:
         Neither of these are np arrays!
         """
         assert(len(obs) == len(ground_truth))
-        self.__init__(self.nStates, self.nObs) #reset
+        if reset:
+            self.__init__(self.nStates, self.nObs) #reset
         for i, ob in enumerate(obs):
             ground = ground_truth[i]
             assert(len(ob) == len(ground))
