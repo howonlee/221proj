@@ -105,21 +105,19 @@ def makeNBPred(datapoint, prior, condprob):
 def makeMMPred(datapoint, model, _):
     """Todo: make probabilistic"""
     last = datapoint[-1] - 67
-    val = np.argmax(model[:, last]) + 67
+    val = np.argmax(model[:, last]) + 67 #use np.random.choice(67, 97, p=something)
     return val
 
 def makeMM3Pred(datapoint, model, _):
     """Todo: make probabilistic"""
     prev1 = datapoint[-1] - 67
     prev2 = datapoint[-2] - 67
-    val = np.argmax(model[:, prev1, prev2]) + 67
+    val = np.argmax(model[:, prev1, prev2]) + 67 #use np.random.choice(67, 97, p=something)
     return val
 
 def makeHMMPred(datapoint, model, _):
-    """Todo: link into HMM class"""
-    return 67
+    best, _2 = model.viterbi(datapoint) #this is probably not the right way to do it
+    return best[-1]
 
-def makeQLearningPred(datapoint, model, percentMatches):
-    reward = percentMatches
-    """Todo: link into qlearning class"""
+def makeQLearningPred(datapoint, model, _):
     return model.chooseAction(datapoint)

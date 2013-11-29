@@ -32,6 +32,7 @@ class Game:
         elif self.predictor == "HMM":
             self.predict(self.hmmModel, model.makeHMMPred)
         elif self.predictor == "Q":
+            #probably do a reinforcement learning step here
             self.predict(self.qModel, model.makeQLearningPred)
 
     def predict(self, model, fn):
