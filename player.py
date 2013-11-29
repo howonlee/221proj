@@ -72,6 +72,9 @@ class Game:
                 color = utils.getNoteColor(rect[0], self.predictionState[rect[0]])
             pygame.draw.rect(windowSurfaceObj, color, rect[1])
 
+    def saveData(self):
+        np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+
 
 if __name__ == "__main__":
     np.set_printoptions(threshold=np.nan)
@@ -82,12 +85,12 @@ if __name__ == "__main__":
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
     pygame.display.set_caption('Music Player')
-    gObj = Game()
+    g = Game()
     while True:
         windowSurfaceObj.fill(utils.blackColor)
-        gObj.noteRects = utils.updateNoteRects(gObj.noteRects, gObj.currNoteState)
-        gObj.drawRectSet(gObj.keyRects)
-        gObj.drawRectSet(gObj.noteRects)
+        g.noteRects = utils.updateNoteRects(g.noteRects, g.currNoteState)
+        g.drawRectSet(g.keyRects)
+        g.drawRectSet(g.noteRects)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.mixer.quit()
@@ -98,12 +101,12 @@ if __name__ == "__main__":
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
-                    gObj.turnNoteOn(noteNum)
+                    g.turnNoteOn(noteNum)
             elif event.type == KEYUP:
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
-                    gObj.turnNoteOff(noteNum)
+                    g.turnNoteOff(noteNum)
             elif event.type == USEREVENT + 1:
-                np.savetxt(gObj.confMatFile, gObj.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+                g.saveData()
         pygame.display.update()
         fpsClock.tick(60)

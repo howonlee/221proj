@@ -70,6 +70,7 @@ def trainMMOrder3(data):
 def trainHMM(data):
     """Todo: link into HMM class"""
     """ next action: figure out how the hidden states in HMM will work """
+    """ or maybe say that the hidden state is the first member of the quad? """
     raise NotImplemented("Not implemented")
     model = HMM(nStates, nObs)
     for ls in data:
@@ -124,6 +125,7 @@ def makeMM3Pred(datapoint, model, _):
     return val
 
 def makeHMMPred(datapoint, model, _):
+    #states are chords?
     best, _2 = model.viterbi(datapoint) #this is probably not the right way to do it
     return best[-1]
 
