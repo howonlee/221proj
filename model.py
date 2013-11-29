@@ -128,6 +128,7 @@ def makeMM3Pred(datapoint, model, _):
 def makeHMMPred(datapoint, model, _):
     #states are chords?
     best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint)) #this is probably not the right way to do it
+    print "best seq: ", best
     return best[-1] + minNote
 
 def makeQLearningPred(datapoint, model, _):

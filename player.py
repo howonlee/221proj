@@ -38,7 +38,7 @@ class Game:
 
     def predict(self, model, fn):
         #curry into this function
-        data = map(operator.itemgetter(0), self.allNotes[-5:])
+        data = map(operator.itemgetter(0), self.allNotes[-10:])
         data = map(lambda x: utils.midiNoteMapping[x], data)
         pred = fn(data, model[0], model[1])
         self.predictionState = map(lambda x: False, self.predictionState)
@@ -56,7 +56,7 @@ class Game:
         print note
         self.noteRects.append(utils.makeNoteRect(noteNum, 1))
         self.allNotes.append(note)
-        if (len(self.allNotes) > 5):
+        if (len(self.allNotes) > 10):
             self.predictNotes()
 
     def turnNoteOff(self, noteNum):
