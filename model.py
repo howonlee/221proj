@@ -68,6 +68,7 @@ def trainMMOrder3(data):
     return (model, None)
 
 def trainHMM(data):
+    """Todo: link into HMM class"""
     raise NotImplemented("Not implemented")
     model = HMM(nStates, nObs)
     for ls in data:
@@ -81,6 +82,7 @@ def trainHMM(data):
                         model[currNote, prevNote, prevNote2] += 1
 
 def trainQLearning(data):
+    """Todo: link into QLearner class"""
     #we have to treat the q learner as having a state which it learns previously
     actions = {}
     #fill out actions here
@@ -101,18 +103,23 @@ def makeNBPred(datapoint, prior, condprob):
     return arg
 
 def makeMMPred(datapoint, model, _):
+    """Todo: make probabilistic"""
     last = datapoint[-1] - 67
     val = np.argmax(model[:, last]) + 67
     return val
 
 def makeMM3Pred(datapoint, model, _):
+    """Todo: make probabilistic"""
     prev1 = datapoint[-1] - 67
     prev2 = datapoint[-2] - 67
     val = np.argmax(model[:, prev1, prev2]) + 67
     return val
 
 def makeHMMPred(datapoint, model, _):
+    """Todo: link into HMM class"""
     return 67
 
-def makeQLearningPred(datapoint, model, _):
+def makeQLearningPred(datapoint, model, percentMatches):
+    reward = percentMatches
+    """Todo: link into qlearning class"""
     return model.chooseAction(datapoint)
