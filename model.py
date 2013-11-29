@@ -82,12 +82,8 @@ def trainHMM(data):
             if (len(quad) > 1): #needed because some quads are null
                 obs.append(map(lambda x: x - minNote, quad))
                 ground.append([quad[0] - minNote] * len(quad))
-    print "=================== obs ==============="
-    print obs
-    print "=================== ground ==============="
-    print ground
-
     model.learn(obs, ground) #this is a bit wrong
+    return (model, None)
 
 def trainQLearning(data):
     actions = []

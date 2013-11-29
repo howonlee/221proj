@@ -9,6 +9,8 @@ class Game:
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
         self.keyRects = []
+        if predictor not in ["MM", "MM3", "HMM", "Q"]:
+            predictor = "MM"
         self.predictor = predictor
         for note, val in enumerate(self.currNoteState):
             self.keyRects.append(utils.makeNoteRect(note, utils.numNotes))
@@ -77,6 +79,11 @@ class Game:
 
 
 if __name__ == "__main__":
+    assert(len(sys.argv) < 3)
+    predOpt = "MM"
+    if len(sys.argv) == 2: #means that we have a pred
+        predOpt = str(sys.argv[1])
+        print predOpt
     np.set_printoptions(threshold=np.nan)
     pygame.init()
     pygame.mixer.init(44100, -16, 2, buffer=512)
@@ -85,7 +92,7 @@ if __name__ == "__main__":
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
     pygame.display.set_caption('Music Player')
-    g = Game()
+    g = Game(predictor = predOpt)
     while True:
         windowSurfaceObj.fill(utils.blackColor)
         g.noteRects = utils.updateNoteRects(g.noteRects, g.currNoteState)
