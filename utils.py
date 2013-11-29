@@ -9,8 +9,8 @@ whiteColor = pygame.Color(255, 255, 255)
 currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_u: 6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
 #the midi mapping is for being a feature for the data
 midiNoteMapping = {}
-for i in range(67, 97):
-    midiNoteMapping[i - 67] = i
+for i in range(43, 96):
+    midiNoteMapping[i - 43] = i
 reverseMidiNoteMapping = dict((v,k) for k,v in midiNoteMapping.items())
 
 def argmax(pairs):
