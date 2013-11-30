@@ -119,7 +119,6 @@ def makeMMPred(datapoint, model, _):
     probsum = probs.sum()
     probs = probs / probsum
     val = np.random.choice(np.arange(minNote, maxNote), p=probs)
-    #val = np.argmax(model[:, last]) + minNote #use np.random.choice(67, 97, p=something)
     return val
 
 def makeMM3Pred(datapoint, model, _):
@@ -130,13 +129,12 @@ def makeMM3Pred(datapoint, model, _):
     probsum = probs.sum()
     probs = probs / probsum
     val = np.random.choice(np.arange(minNote, maxNote), p=probs)
-    #val = np.argmax(model[:, prev1, prev2]) + maxNote #use np.random.choice(67, 97, p=something)
     return val
 
 def makeHMMPred(datapoint, model, _):
     #states are chords?
+    #states are ... what?
     best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint)) #this is probably not the right way to do it
-    print "best seq: ", best
     return best[-1] + minNote
 
 def makeQLearningPred(datapoint, model, _):
