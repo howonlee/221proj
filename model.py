@@ -133,4 +133,4 @@ def makeHMMPred(datapoint, model, _):
 
 def makeQLearningPred(datapoint, model, _):
     #do some learning here
-    return model.chooseAction(datapoint)
+    return model.chooseAction(datapoint[-1])

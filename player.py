@@ -75,6 +75,7 @@ class Game:
             pygame.draw.rect(windowSurfaceObj, color, rect[1])
 
     def saveData(self):
+        #need to record memory data, too
         np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
 
 
