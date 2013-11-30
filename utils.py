@@ -3,7 +3,7 @@ from pygame.locals import *
 
 winHeight = 900
 winWidth = 1440
-numNotes = 36
+numNotes = 96 - 43 + 1
 blackColor = pygame.Color(0, 0, 0)
 whiteColor = pygame.Color(255, 255, 255)
 currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_u: 6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
@@ -66,5 +66,5 @@ for i in range(numNotes):
     max_sample = 2 ** (16 - 1) - 1
     for s in range(n_samples):
         t = float(s) / sample_rate #time in seconds
-        bufs[i][s][0] = int(round(max_sample*(math.cos(2*math.pi*freqs[i]*t)) ** 20))
-        bufs[i][s][1] = int(round(max_sample*(math.cos(2*math.pi*freqs[i]*t)) ** 20))
+        bufs[i][s][0] = int(round(max_sample*(math.cos(2*math.pi*freqs[i % 12]*t)) ** 20))
+        bufs[i][s][1] = int(round(max_sample*(math.cos(2*math.pi*freqs[i % 12]*t)) ** 20))

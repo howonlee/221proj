@@ -42,7 +42,9 @@ class Game:
         data = map(lambda x: utils.midiNoteMapping[x], data)
         pred = fn(data, model[0], model[1])
         self.predictionState = map(lambda x: False, self.predictionState)
-        self.predictionState[utils.reverseMidiNoteMapping[pred]] = True
+        midiNote = utils.reverseMidiNoteMapping[pred]
+        print "midiNote: ", midiNote
+        self.predictionState[midiNote] = True
 
     def turnNoteOn(self, noteNum):
         self.soundMapping[noteNum].play(loops=-1)
