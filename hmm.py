@@ -35,6 +35,8 @@ class HMM:
         if smooth == "Laplace":
             self.trans = self.trans + smoothParam
             self.emis = self.emis + smoothParam
+        elif smooth == "None":
+            pass #do nothing
 
         #normalize and convert to log
         nplog = np.vectorize(self._convert_to_log)

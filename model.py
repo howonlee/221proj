@@ -14,7 +14,7 @@ print "finished loading nottingham..."
 jsb = cPickle.load(file("./data/JSB Chorales.pickle"))
 maxNote = 96
 minNote = 43
-noteRange = 96 - 43 + 1
+noteRange = 96 - 43
 print "finished loading jsb..."
 
 #this is a multinomial NB
@@ -115,14 +115,22 @@ def makeNBPred(datapoint, prior, condprob):
 def makeMMPred(datapoint, model, _):
     """Todo: make probabilistic"""
     last = datapoint[-1] - minNote
-    val = np.argmax(model[:, last]) + minNote #use np.random.choice(67, 97, p=something)
+    probs = model[:, last] + 0.05
+    probsum = probs.sum()
+    probs = probs / probsum
+    val = np.random.choice(np.arange(minNote, maxNote), p=probs)
+    #val = np.argmax(model[:, last]) + minNote #use np.random.choice(67, 97, p=something)
     return val
 
 def makeMM3Pred(datapoint, model, _):
     """Todo: make probabilistic"""
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
-    val = np.argmax(model[:, prev1, prev2]) + maxNote #use np.random.choice(67, 97, p=something)
+    probs = model[:, prev1, prev2] + 0.05
+    probsum = probs.sum()
+    probs = probs / probsum
+    val = np.random.choice(np.arange(minNote, maxNote), p=probs)
+    #val = np.argmax(model[:, prev1, prev2]) + maxNote #use np.random.choice(67, 97, p=something)
     return val
 
 def makeHMMPred(datapoint, model, _):

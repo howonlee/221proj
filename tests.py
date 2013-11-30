@@ -5,7 +5,7 @@ def test_hmm():
     m = HMM(2, 2)
     observations = [[0,0,0,0,0,1,1,1,1,1,0,1,0,0,0,1,0,1,1,1,1],[0,0,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,1,1,1,0,0,1,0,0]]
     ground = [[0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1],[0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,0,0]]
-    m.learn(observations, ground)
+    m.learn(observations, ground, smooth=None)
     trueres = ([0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0], -21.944)
     res = m.viterbi(observations[1])
     assert trueres[0] == res[0]
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     m = HMM(2, 2)
     observations = [[0,0,0,0,0,1,1,1,1,1,0,1,0,0,0,1,0,1,1,1,1],[0,0,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,1,1,1,0,0,1,0,0]]
     ground = [[0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1],[0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,0,0]]
-    m.learn(observations, ground)
+    m.learn(observations, ground, smooth=None)
     trueres = ([0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0], -21.944)
     res = m.viterbi(observations[1])
     assert trueres[0] == res[0]
