@@ -9,6 +9,7 @@ class Game:
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
         self.keyRects = []
+        self.actionQueue = []
         if predictor not in ["MM", "MM3", "HMM", "Q"]:
             predictor = "MM"
         self.predictor = predictor
@@ -40,13 +41,29 @@ class Game:
         #curry into this function
         data = map(operator.itemgetter(0), self.allNotes[-10:])
         data = map(lambda x: utils.midiNoteMapping[x], data)
+        if self.predictor == "Q":
+            pass #something
+            #self.qModel.learn(state1, action1, reward, state2)
         pred = fn(data, model[0], model[1])
         self.predictionState = map(lambda x: False, self.predictionState)
         midiNote = utils.reverseMidiNoteMapping[pred]
         print "midiNote: ", midiNote
         self.predictionState[midiNote] = True
 
+    def addActionQueue(self, note, action):
+        self.actionQueue.append((note, action))
+
+    def popActionQueue(self):
+        if not self.actionQueue: return
+        top = self.actionQueue.pop()
+        assert len(top) == 2
+        if top[1] == utils.NOTE_ON:
+            self.turnNoteOn(top[0])
+        if top[1] == utils.NOTE_OFF:
+            self.turnNoteOff(top[0])
+
     def turnNoteOn(self, noteNum):
+        assert(self.currNoteState[noteNum] == 0)
         self.soundMapping[noteNum].play(loops=-1)
         self.currNoteState[noteNum] = 1
         print noteNum, " : ", self.currNoteState[noteNum]
@@ -62,6 +79,7 @@ class Game:
             self.predictNotes()
 
     def turnNoteOff(self, noteNum):
+        assert(self.currNoteState[noteNum] == 1)
         self.soundMapping[noteNum].stop()
         self.currNoteState[noteNum] = 0
         print noteNum, " : ", self.currNoteState[noteNum]
@@ -92,6 +110,7 @@ if __name__ == "__main__":
     pygame.mixer.init(44100, -16, 2, buffer=512)
     pygame.mixer.set_num_channels(12)
     pygame.time.set_timer(USEREVENT+1, 1000) #for saving data
+    pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
     pygame.display.set_caption('Music Player')
@@ -111,12 +130,14 @@ if __name__ == "__main__":
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
-                    g.turnNoteOn(noteNum)
+                    g.addActionQueue(noteNum, utils.NOTE_ON)
             elif event.type == KEYUP:
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
-                    g.turnNoteOff(noteNum)
+                    g.addActionQueue(noteNum, utils.NOTE_OFF)
             elif event.type == USEREVENT + 1:
                 g.saveData()
+            elif event.type == USEREVENT + 2:
+                g.popActionQueue()
         pygame.display.update()
         fpsClock.tick(60)

@@ -118,7 +118,7 @@ def makeMMPred(datapoint, model, _):
     probs = model[:, last] + 0.05
     probsum = probs.sum()
     probs = probs / probsum
-    val = np.random.choice(np.arange(minNote, maxNote), p=probs)
+    val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
 def makeMM3Pred(datapoint, model, _):
@@ -128,7 +128,7 @@ def makeMM3Pred(datapoint, model, _):
     probs = model[:, prev1, prev2] + 0.05
     probsum = probs.sum()
     probs = probs / probsum
-    val = np.random.choice(np.arange(minNote, maxNote), p=probs)
+    val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
 def makeHMMPred(datapoint, model, _):
@@ -138,5 +138,4 @@ def makeHMMPred(datapoint, model, _):
     return best[-1] + minNote
 
 def makeQLearningPred(datapoint, model, _):
-    #do some learning here
     return model.chooseAction(datapoint[-1])
