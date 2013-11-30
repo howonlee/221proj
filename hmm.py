@@ -66,7 +66,6 @@ class HMM:
 
         for i in range(self.nStates):
             tab[0, i] = self.emis[i, obs[0]] + self.pi[i]
-        print self.trans
         for i in range(1, len(obs)):
             for j in range(self.nStates):
                 smax = -1

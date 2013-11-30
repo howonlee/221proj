@@ -45,7 +45,7 @@ def trainNB(data):
 
 def trainMM(data):
     N = len(data)
-    model = np.zeros((noteRange, noteRange))
+    model = np.zeros((noteRange + 1, noteRange + 1))
     for ls in data:
         for quad in ls:
             if (quad): #needed because some quads are null
@@ -58,7 +58,7 @@ def trainMM(data):
 
 def trainMMOrder3(data):
     N = len(data)
-    model = np.zeros((noteRange, noteRange, noteRange))
+    model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
     for ls in data:
         for quad in ls:
             if (quad): #needed because some quads are null
@@ -74,7 +74,7 @@ def trainHMM(data):
     """Todo: link into HMM class"""
     """ next action: figure out how the hidden states in HMM will work """
     """ or maybe say that the hidden state is the first member of the quad? """
-    model = HMM(noteRange, noteRange)
+    model = HMM(noteRange+1, noteRange+1)
     obs = []
     ground = []
     for ls in data:
