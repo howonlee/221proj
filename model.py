@@ -71,9 +71,6 @@ def trainMMOrder3(data):
     return (model, None)
 
 def trainHMM(data):
-    """Todo: link into HMM class"""
-    """ next action: figure out how the hidden states in HMM will work """
-    """ or maybe say that the hidden state is the first member of the quad? """
     model = HMM(noteRange+1, noteRange+1)
     obs = []
     ground = []
@@ -113,7 +110,6 @@ def makeNBPred(datapoint, prior, condprob):
     return arg
 
 def makeMMPred(datapoint, model, _):
-    """Todo: make probabilistic"""
     last = datapoint[-1] - minNote
     probs = model[:, last] + 0.05
     probsum = probs.sum()
@@ -122,7 +118,6 @@ def makeMMPred(datapoint, model, _):
     return val
 
 def makeMM3Pred(datapoint, model, _):
-    """Todo: make probabilistic"""
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
     probs = model[:, prev1, prev2] + 0.05
@@ -132,8 +127,6 @@ def makeMM3Pred(datapoint, model, _):
     return val
 
 def makeHMMPred(datapoint, model, _):
-    #states are chords?
-    #states are ... what?
     best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint)) #this is probably not the right way to do it
     return best[-1] + minNote
 
