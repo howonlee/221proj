@@ -4,12 +4,13 @@ import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 
 class Game:
-    def __init__(self, showPredictions=True, predictor="MM", confMatFile="./confmatrix.txt"):
+    def __init__(self, showPredictions=True, predictor="MM", confMatFile="./confmatrix.txt", hidden=True):
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
         self.keyRects = []
         self.actionQueue = []
+        self.hidden = hidden
         if predictor not in ["MM", "MM3", "HMM", "Q"]:
             predictor = "MM"
         self.predictor = predictor
@@ -100,7 +101,6 @@ class Game:
         self.confMatList.append(self.confMatrix[:,:])
         np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
 
-
 if __name__ == "__main__":
     assert(len(sys.argv) < 3)
     predOpt = "MM"
@@ -131,14 +131,23 @@ if __name__ == "__main__":
                 if event.key == K_ESCAPE:
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
-                if event.key == K_1:
+                    g.predictor = "MM"
+                if event.key == K_2:
+                    g.predictor = "MM3"
+                if event.key == K_3:
+                    g.predictor = "HMM"
+                if event.key == K_4:
+                    g.predictor = "Q"
+                if event.key == K_5:
+                    g.predictor = "Q"
+                if event.key == K_6:
+                    g.smooth = "Laplace"
+                if event.key == K_7:
+                    g.smooth = "Katz"
+                if event.key == K_8:
+                    g.smooth = "KneserNey"
+                if event.key == K_0:
+                    g.hidden = not g.hidden
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     g.addActionQueue(noteNum, utils.NOTE_ON)
