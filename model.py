@@ -20,17 +20,6 @@ cluster = runKMeans(jsb["train"])
 print "finished running clusters..."
 
 def runKMeans(data, iters=10, k=12):
-    N = len(data)
-    music = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-    for ls in data:
-        for quad in ls:
-            if (quad): #needed because some quads are null
-                for idx, q in enumerate(quad):
-                    if idx > 2:
-                        currNote = q - minNote
-                        prevNote = quad[idx - 1] - minNote
-                        prevNote2 = quad[idx - 2] - minNote
-                        model[currNote, prevNote, prevNote2] += 1
     """
     Runs K-means to learn k centroids, for iter iterations.
 
@@ -42,10 +31,20 @@ def runKMeans(data, iters=10, k=12):
     Returns:
       centroids - 2D numpy array of size patchSize x k
     """
+    N = len(data)
+    music = np.zeros((noteRange+1, noteRange+1, noteRange+1, noteRange+1))
+    for ls in data:
+        for quad in ls:
+            if (quad): #needed because some quads are null
+                note0 = quad[0] - minNote
+                note1 = quad[1] - minNote
+                note2 = quad[2] - minNote
+                note3 = quad[3] - minNote
+                music[note0, note1, note2, note3] += 1
 
     # This line starts you out with randomly initialized centroids in a matrix
     # with patchSize rows and k columns. Each column is a centroid.
-    centroids = np.random.randn(patches.shape[0],k)
+    centroids = np.random.randn(music.shape[0],k)
     numPatches = patches.shape[1]
     clustersId = np.random.randint(0, k, size=numPatches)
 
