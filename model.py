@@ -17,7 +17,10 @@ minNote = 43
 noteRange = 96 - 43
 print "finished loading jsb..."
 
-cluster = {}
+cluster = getCluster(data)
+
+def getCluster(data):
+    N = len(data)
 
 #this is a multinomial NB
 #it is terrible at this task
