@@ -23,6 +23,7 @@ class Game:
         #MODELS#
         self.confMatList = []
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
+        self.avgF1s = []
         self.confMatFile = confMatFile
         self.memoryList = []
         self.cpuList = []
@@ -101,43 +102,56 @@ class Game:
     def saveData(self):
         #need to record memory, cpu data, too
         self.confMatList.append(self.confMatrix[:,:])
+        correctList = [numpy.diagonal(confMatList[-1])[i] for i in xrange(confMatList[-1].size(0))]
+        rowSums = list(numpy.sum(confMatList[-1], axis=1)) #sums of each row
+        colSums = list(numpy.sum(confMatList[-1], axis=0)) #sums of each column
+        precisions = [float(correctList[i]) / float(rowSums[i]) for i in xrange(len(correctList))]
+        recalls = [float(correctList[i]) / float(colSums[i]) for i in xrange(len(correctList))]
+        f1s = [2*((precisions[i] * recalls[i]) / (precisions[i] + recalls[i])) for i in xrange(len(correctlist))]
+        avg = sum(f1s) / len(f1s)
+        self.avgF1s.append(avg)
         pid = os.getpid()
         proc = psutil.Process(pid)
         self.memoryList.append(proc.get_memory_info().vms)
         self.cpuList.append(proc.get_cpu_percent(interval=0)) #this returns immediately
 
     def saveNoteData(self):
-        #save the note data in a way that is compatible with using it later as training data
-        print self.allNotes
+        print self.allNotes #%%%%%%%%%%%
 
-    def makeConfMatGraphs(self):
+    def makeGraphs(self):
         #save final confusion matrix in textfile
         np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        datestr = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        self.saveAcc(datestr)
+        self.saveF1(datestr)
+        self.saveMemory(datestr)
+        self.saveCPU(datestr)
+
+    def saveAcc(self, datestr):
         correctList = map(lambda x: x.trace(), self.confMatList)
         totalList = map(lambda x: x.sum(), self.confMatList)
         accList = [float(i) / float(j) for j in totalList for i in correctList]
         plt.plot(accList)
         plt.ylabel("Accuracy Over Time")
-        plt.show() #save this properly instead
-        precisions = []
-        recalls = []
-        f1s = []
-        avgF1s = []
-        plt.plot(avgF1s)
-        plt.ylabel("Average F1 Score Over All Classes")
-        plt.show() #save this properly instead
-        #want average F1 measure also
-        #want to show confusion matrix also
+        plt.savefig("acc%s.png" % datestr, bbox_inches=0) #save this properly instead
 
-    def makeMemoryGraphs(self):
+    def saveF1(self, datestr):
+        plt.plot(self.avgF1s)
+        plt.ylabel("Average F1 Score Over All Classes")
+        datestr = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        plt.savefig("f1%s.png" % datestr, bbox_inches=0) #save this properly instead
+
+    def saveMemory(self, datestr):
         plt.plot(self.memoryList)
         plt.ylabel("Virtual Memory Used")
-        plt.show() #save this properly instead
+        datestr = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        plt.savefig("mem%s.png" % datestr, bbox_inches=0) #save this properly instead
 
-    def makeCPUGraphs(self):
+    def saveCPU(self, datestr):
         plt.plot(self.cpuList)
         plt.ylabel("Percent Available CPU used")
-        plt.show() #save this properly instead
+        datestr = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        plt.savefig("cpu%s.png" % datestr, bbox_inches=0) #save this properly instead
 
 if __name__ == "__main__":
     assert(len(sys.argv) < 3)
@@ -168,7 +182,7 @@ if __name__ == "__main__":
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     g.saveNoteData()
-                    g.makeConfMatGraphs()
+                    g.makeGraphs()
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key == K_1:
                     g.predictor = "MM"
