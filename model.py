@@ -31,7 +31,6 @@ def runKMeans(data, iters=10, k=12):
     Returns:
       centroids - 2D numpy array of size patchSize x k
     """
-    N = len(data)
     music = np.zeros((noteRange+1, noteRange+1, noteRange+1, noteRange+1))
     for ls in data:
         for quad in ls:
@@ -44,8 +43,9 @@ def runKMeans(data, iters=10, k=12):
 
     # This line starts you out with randomly initialized centroids in a matrix
     # with patchSize rows and k columns. Each column is a centroid.
-    centroids = np.random.randn(music.shape[0],k)
-    numPatches = patches.shape[1]
+    centroids = np.random.randn(4,k)
+    N = len(data[0])
+    #numPatches = patches.shape[1]
     clustersId = np.random.randint(0, k, size=numPatches)
 
     for i in range(iters):

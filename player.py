@@ -65,6 +65,10 @@ class Game:
             self.turnNoteOn(top[0])
         if top[1] == utils.NOTE_OFF:
             self.turnNoteOff(top[0])
+        if top[1] == utils.OCTAVE_UP:
+            self.octaveUp()
+        if top[1] == utils.OCTAVE_DOWN:
+            self.octaveDown()
 
     def turnNoteOn(self, noteNum):
         assert(self.currNoteState[noteNum] == 0)
@@ -90,6 +94,12 @@ class Game:
         lastNote = next(x for x in reversed(self.allNotes) if x[0] == noteNum)
         lastNote[2] = pygame.time.get_ticks()
         print lastNote
+
+    def octaveUp(self):
+        pass
+
+    def octaveDown(self):
+        pass
 
     def drawRectSet(self, rects):
         for rect in rects:
@@ -203,9 +213,9 @@ if __name__ == "__main__":
                 if event.key == K_:
                     g.smooth = "KneserNey"
                 if event.key == K_g:
-                    g.octaveUp()
+                    g.addActionQueue(-1, utils.OCTAVE_DOWN)
                 if event.key == K_h:
-                    g.octaveDown()
+                    g.addActionQueue(-1, utils.OCTAVE_UP)
                 if event.key == K_0:
                     g.showPredictions = not g.showPredictions
                 if event.key in utils.currNoteMapping:
