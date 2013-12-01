@@ -35,6 +35,10 @@ class HMM:
         if smooth == "Laplace":
             self.trans = self.trans + smoothParam
             self.emis = self.emis + smoothParam
+        elif smooth == "Katz":
+            pass
+        elif smooth == "KneserNey":
+            pass
         elif smooth == "None":
             pass #do nothing
 

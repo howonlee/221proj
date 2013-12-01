@@ -109,20 +109,20 @@ def makeNBPred(datapoint, prior, condprob):
     arg = k[v.index(max(v))]
     return arg
 
+def normalizeVec(vec):
+    vecsum = vec.sum()
+    return vec / vecsum
+
 def makeMMPred(datapoint, model, _):
     last = datapoint[-1] - minNote
-    probs = model[:, last] + 0.05
-    probsum = probs.sum()
-    probs = probs / probsum
+    probs = normalizeVec(model[:, last] + 0.05)
     val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
 def makeMM3Pred(datapoint, model, _):
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
-    probs = model[:, prev1, prev2] + 0.05
-    probsum = probs.sum()
-    probs = probs / probsum
+    probs = normalizeVec(model[:, prev1, prev2] + 0.05)
     val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 

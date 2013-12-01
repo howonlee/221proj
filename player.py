@@ -20,6 +20,7 @@ class Game:
         self.noteRects = [] #(note, (left, top, width, height))
         self.soundMapping = utils.initSoundMappings()
         #MODELS#
+        self.confMatList = []
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.confMatFile = confMatFile
         self.mmModel = model.trainMM(model.jsb["train"])
@@ -95,7 +96,8 @@ class Game:
             pygame.draw.rect(windowSurfaceObj, color, rect[1])
 
     def saveData(self):
-        #need to record memory data, too
+        #need to record memory, cpu data, too
+        self.confMatList.append(self.confMatrix[:,:])
         np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
 
 
@@ -110,7 +112,7 @@ if __name__ == "__main__":
     pygame.mixer.init(44100, -16, 2, buffer=512)
     pygame.mixer.set_num_channels(12)
     pygame.time.set_timer(USEREVENT+1, 1000) #for saving data
-    pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
+    pygame.time.set_timer(USEREVENT+2, 5) #for playing notes
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
     pygame.display.set_caption('Music Player')
@@ -128,6 +130,15 @@ if __name__ == "__main__":
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     pygame.event.post(pygame.event.Event(QUIT))
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
+                if event.key == K_1:
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     g.addActionQueue(noteNum, utils.NOTE_ON)
