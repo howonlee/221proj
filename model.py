@@ -16,7 +16,7 @@ maxNote = 96
 minNote = 43
 noteRange = 96 - 43
 print "finished loading jsb..."
-cluster = runKMeans(jsb["train"])
+_, cluster = runKMeans(jsb["train"])
 print "finished running clusters..."
 
 def runKMeans(data, iters=10, k=12):
@@ -47,7 +47,7 @@ def runKMeans(data, iters=10, k=12):
         clustersId = np.array([np.argmin([np.linalg.norm(patches[:, p] - centroids[:, c]) for c in range(k)]) for p in range(numPatches)])
         map(lambda c: np.mean([patches[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
     print centroids
-    return centroids
+    return (centroids, clustersId)
 
 #this is a multinomial NB
 #it is terrible at this task
@@ -107,10 +107,10 @@ def trainHMM(data):
     obs = []
     ground = []
     for ls in data:
-        for quad in ls:
+        for idx, quad in enumerate(ls):
             if (len(quad) > 1): #needed because some quads are null
                 obs.append(map(lambda x: x - minNote, quad))
-                ground.append([cluster[quad]] * len(quad))
+                ground.append([cluster[idx]] * len(quad))
     model.learn(obs, ground) #this is a bit wrong
     return (model, None)
 
@@ -126,7 +126,7 @@ def trainQLearning(data):
                     if idx > 1:
                         currNote = note
                         prevNote = quad[idx - 1]
-                        q.learn(prevNote, cluster[quad], 1, note) #this is a bit wrong
+                        q.learn(prevNote, cluster[idx], 1, note) #this is a bit wrong
                         #q.learn(state1, action1, reward, state2)
     return (q, None)
 

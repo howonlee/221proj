@@ -46,7 +46,10 @@ class Game:
         data = map(operator.itemgetter(0), self.allNotes[-10:])
         data = map(lambda x: utils.midiNoteMapping[x], data)
         if self.predictor == "Q":
-            self.qModel.learn(state1, action1, reward, state2)
+            reward = 1 #explode properly
+            prevNote = self.allNotes[-1][0]
+            state2 = prevNote
+            self.qModel.learn(prevNote, action1, reward, state2)
         pred = fn(data, model[0], model[1])
         self.predictionState = map(lambda x: False, self.predictionState)
         midiNote = utils.reverseMidiNoteMapping[pred]
