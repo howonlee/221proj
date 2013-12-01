@@ -31,26 +31,22 @@ def runKMeans(data, iters=10, k=12):
     Returns:
       centroids - 2D numpy array of size patchSize x k
     """
-    music = np.zeros((noteRange+1, noteRange+1, noteRange+1, noteRange+1))
+    music = np.zeros(len(data[0]), 4)
     for ls in data:
-        for quad in ls:
-            if (quad): #needed because some quads are null
-                note0 = quad[0] - minNote
-                note1 = quad[1] - minNote
-                note2 = quad[2] - minNote
-                note3 = quad[3] - minNote
-                music[note0, note1, note2, note3] += 1
+        for idx, quad in enumerate(ls):
+            if (quad and len(quad) == 4): #needed because some quads are null
+                music[idx] = list(quad)
 
     # This line starts you out with randomly initialized centroids in a matrix
     # with patchSize rows and k columns. Each column is a centroid.
     centroids = np.random.randn(4,k)
-    N = len(data[0])
-    #numPatches = patches.shape[1]
+    numPatches = len(data[0])
     clustersId = np.random.randint(0, k, size=numPatches)
 
     for i in range(iters):
         clustersId = np.array([np.argmin([np.linalg.norm(patches[:, p] - centroids[:, c]) for c in range(k)]) for p in range(numPatches)])
         map(lambda c: np.mean([patches[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
+    print centroids
     return centroids
 
 #this is a multinomial NB
