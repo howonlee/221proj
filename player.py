@@ -20,13 +20,13 @@ class Game:
         self.modelRects = [] #(note, (left, top, width, height))
         self.noteRects = [] #(note, (left, top, width, height))
         self.soundMapping = utils.initSoundMappings()
-        #MODELS#
         self.confMatList = []
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.avgF1s = []
         self.confMatFile = confMatFile
         self.memoryList = []
         self.cpuList = []
+        #MODELS#
         self.mmModel = model.trainMM(model.jsb["train"])
         self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
         self.hmmModel = model.trainHMM(model.jsb["train"])
@@ -102,7 +102,7 @@ class Game:
     def saveData(self):
         #need to record memory, cpu data, too
         self.confMatList.append(self.confMatrix[:,:])
-        correctList = [numpy.diagonal(confMatList[-1])[i] for i in xrange(confMatList[-1].size(0))]
+        correctList = [numpy.diagonal(confMatList[-1])[i] for i in xrange(confMatList[-1].shape[0])]
         rowSums = list(numpy.sum(confMatList[-1], axis=1)) #sums of each row
         colSums = list(numpy.sum(confMatList[-1], axis=0)) #sums of each column
         precisions = [float(correctList[i]) / float(rowSums[i]) for i in xrange(len(correctList))]

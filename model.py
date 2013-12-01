@@ -16,11 +16,43 @@ maxNote = 96
 minNote = 43
 noteRange = 96 - 43
 print "finished loading jsb..."
+cluster = runKMeans(jsb["train"])
+print "finished running clusters..."
 
-cluster = getCluster(data)
-
-def getCluster(data):
+def runKMeans(data, iters=10, k=12):
     N = len(data)
+    music = np.zeros((noteRange+1, noteRange+1, noteRange+1))
+    for ls in data:
+        for quad in ls:
+            if (quad): #needed because some quads are null
+                for idx, q in enumerate(quad):
+                    if idx > 2:
+                        currNote = q - minNote
+                        prevNote = quad[idx - 1] - minNote
+                        prevNote2 = quad[idx - 2] - minNote
+                        model[currNote, prevNote, prevNote2] += 1
+    """
+    Runs K-means to learn k centroids, for iter iterations.
+
+    Args:
+      k - number of centroids.
+      patches - 2D numpy array of size patchSize x numPatches
+      maxIter - number of iterations to run K-means for
+
+    Returns:
+      centroids - 2D numpy array of size patchSize x k
+    """
+
+    # This line starts you out with randomly initialized centroids in a matrix
+    # with patchSize rows and k columns. Each column is a centroid.
+    centroids = np.random.randn(patches.shape[0],k)
+    numPatches = patches.shape[1]
+    clustersId = np.random.randint(0, k, size=numPatches)
+
+    for i in range(iters):
+        clustersId = np.array([np.argmin([np.linalg.norm(patches[:, p] - centroids[:, c]) for c in range(k)]) for p in range(numPatches)])
+        map(lambda c: np.mean([patches[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
+    return centroids
 
 #this is a multinomial NB
 #it is terrible at this task
