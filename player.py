@@ -1,11 +1,11 @@
-import pygame, sys, utils, model, operator, psutil, os
+import pygame, sys, utils, model, operator, psutil, os, pickle
 from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 import matplotlib.pyplot as plt
 
 class Game:
-    def __init__(self, showPredictions=True, predictor="MM", confMatFile="./confmatrix.txt", hidden=False):
+    def __init__(self, showPredictions=True, predictor="MM", hidden=False):
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
@@ -23,7 +23,6 @@ class Game:
         self.confMatList = []
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.avgF1s = []
-        self.confMatFile = confMatFile
         self.memoryList = []
         self.cpuList = []
         #MODELS#
@@ -115,13 +114,19 @@ class Game:
         self.memoryList.append(proc.get_memory_info().vms)
         self.cpuList.append(proc.get_cpu_percent(interval=0)) #this returns immediately
 
-    def saveNoteData(self):
-        print self.allNotes #%%%%%%%%%%%
+    def saveNoteData(self, datestr):
+        data = {}
+        data["train"] = []
+        quadAllNotes = [map(lambda x: x[0], self.allNotes[x:x+4]) for x in xrange(0, len(self.allNotes), 4)]
+        data["train"].append(quadAllNotes)
+        pickle.dump(data, "./noteData%s" % datestr)
 
     def makeGraphs(self):
         #save final confusion matrix in textfile
-        np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         datestr = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        #delimiter's whacky and stuff to be better at latexing
+        np.savetxt(".confMat%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        self.saveNoteData(datestr)
         self.saveAcc(datestr)
         self.saveF1(datestr)
         self.saveMemory(datestr)
@@ -181,7 +186,6 @@ if __name__ == "__main__":
                 sys.exit()
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    g.saveNoteData()
                     g.makeGraphs()
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key == K_1:
