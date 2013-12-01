@@ -1,16 +1,16 @@
-import pygame, sys, utils, model, operator
+import pygame, sys, utils, model, operator, psutil, os
 from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Game:
-    def __init__(self, showPredictions=True, predictor="MM", confMatFile="./confmatrix.txt", hidden=True):
+    def __init__(self, showPredictions=True, predictor="MM", confMatFile="./confmatrix.txt", hidden=False):
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
         self.keyRects = []
         self.actionQueue = []
-        self.hidden = hidden
         if predictor not in ["MM", "MM3", "HMM", "Q"]:
             predictor = "MM"
         self.predictor = predictor
@@ -24,6 +24,8 @@ class Game:
         self.confMatList = []
         self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
         self.confMatFile = confMatFile
+        self.memoryList = []
+        self.cpuList = []
         self.mmModel = model.trainMM(model.jsb["train"])
         self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
         self.hmmModel = model.trainHMM(model.jsb["train"])
@@ -99,7 +101,43 @@ class Game:
     def saveData(self):
         #need to record memory, cpu data, too
         self.confMatList.append(self.confMatrix[:,:])
+        pid = os.getpid()
+        proc = psutil.Process(pid)
+        self.memoryList.append(proc.get_memory_info().vms)
+        self.cpuList.append(proc.get_cpu_percent(interval=0)) #this returns immediately
+
+    def saveNoteData(self):
+        #save the note data in a way that is compatible with using it later as training data
+        print self.allNotes
+
+    def makeConfMatGraphs(self):
+        #save final confusion matrix in textfile
         np.savetxt(self.confMatFile, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        correctList = map(lambda x: x.trace(), self.confMatList)
+        totalList = map(lambda x: x.sum(), self.confMatList)
+        accList = [float(i) / float(j) for j in totalList for i in correctList]
+        plt.plot(accList)
+        plt.ylabel("Accuracy Over Time")
+        plt.show() #save this properly instead
+        precisions = []
+        recalls = []
+        f1s = []
+        avgF1s = []
+        plt.plot(avgF1s)
+        plt.ylabel("Average F1 Score Over All Classes")
+        plt.show() #save this properly instead
+        #want average F1 measure also
+        #want to show confusion matrix also
+
+    def makeMemoryGraphs(self):
+        plt.plot(self.memoryList)
+        plt.ylabel("Virtual Memory Used")
+        plt.show() #save this properly instead
+
+    def makeCPUGraphs(self):
+        plt.plot(self.cpuList)
+        plt.ylabel("Percent Available CPU used")
+        plt.show() #save this properly instead
 
 if __name__ == "__main__":
     assert(len(sys.argv) < 3)
@@ -129,6 +167,8 @@ if __name__ == "__main__":
                 sys.exit()
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    g.saveNoteData()
+                    g.makeConfMatGraphs()
                     pygame.event.post(pygame.event.Event(QUIT))
                 if event.key == K_1:
                     g.predictor = "MM"
@@ -139,15 +179,17 @@ if __name__ == "__main__":
                 if event.key == K_4:
                     g.predictor = "Q"
                 if event.key == K_5:
-                    g.predictor = "Q"
-                if event.key == K_6:
                     g.smooth = "Laplace"
-                if event.key == K_7:
+                if event.key == K_6:
                     g.smooth = "Katz"
-                if event.key == K_8:
+                if event.key == K_:
                     g.smooth = "KneserNey"
+                if event.key == K_g:
+                    g.octaveUp()
+                if event.key == K_h:
+                    g.octaveDown()
                 if event.key == K_0:
-                    g.hidden = not g.hidden
+                    g.showPredictions = not g.showPredictions
                 if event.key in utils.currNoteMapping:
                     noteNum = utils.currNoteMapping[event.key]
                     g.addActionQueue(noteNum, utils.NOTE_ON)

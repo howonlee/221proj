@@ -17,6 +17,8 @@ minNote = 43
 noteRange = 96 - 43
 print "finished loading jsb..."
 
+cluster = {}
+
 #this is a multinomial NB
 #it is terrible at this task
 def trainNB(data):
@@ -78,7 +80,7 @@ def trainHMM(data):
         for quad in ls:
             if (len(quad) > 1): #needed because some quads are null
                 obs.append(map(lambda x: x - minNote, quad))
-                ground.append([quad[0] - minNote] * len(quad))
+                ground.append([cluster[quad]] * len(quad))
     model.learn(obs, ground) #this is a bit wrong
     return (model, None)
 
@@ -94,7 +96,7 @@ def trainQLearning(data):
                     if idx > 1:
                         currNote = note
                         prevNote = quad[idx - 1]
-                        q.learn(prevNote, quad[0], 1, note) #this is a bit wrong
+                        q.learn(prevNote, cluster[quad], 1, note) #this is a bit wrong
                         #q.learn(state1, action1, reward, state2)
     return (q, None)
 
