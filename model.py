@@ -62,8 +62,10 @@ class Model:
         qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
-                obs.append(map(lambda x: x - minNote, quad))
-                ground.append([self.cluster[quadidx]] * len(quad))
+                tempquad = map(lambda x: x - minNote, quad)
+                obs.append(tempquad[1:])
+                tempquad = map(lambda x: (x - minNote) % 12, quad)
+                ground.append(tempquad[:3])
                 if (quad):
                     for idx, note in enumerate(quad):
                         if idx > 0:
@@ -71,7 +73,7 @@ class Model:
                             prevNote = quad[idx - 1]
                             #Q learning
                             #q.learn(state1, action1, reward, state2)
-                            qModel.learn(prevNote, self.cluster[quadidx], 1, note) #this is a bit wrong
+                            qModel.learn(prevNote, note, 1, note)
                             #Markov model
                             mmModel[currNote - minNote, prevNote - minNote] += 1
                         if idx > 2:

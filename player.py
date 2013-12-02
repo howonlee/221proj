@@ -99,6 +99,8 @@ class Game:
                     self.octave -= 1
 
     def turnNoteOn(self, noteNum):
+        if noteNum >= len(self.currNoteState) or noteNum < 0:
+            return
         assert(self.currNoteState[noteNum] == 0)
         self.soundMapping[noteNum].play(loops=-1)
         self.currNoteState[noteNum] = 1
@@ -126,6 +128,8 @@ class Game:
             self.predictNotes()
 
     def turnNoteOff(self, noteNum):
+        if noteNum >= len(self.currNoteState) or noteNum < 0:
+            return
         assert(self.currNoteState[noteNum] == 1)
         self.soundMapping[noteNum].stop()
         self.currNoteState[noteNum] = 0
@@ -184,6 +188,7 @@ class Game:
             pickle.dump(data, f)
 
     def savePredsData(self, datestr):
+        #we also want plots
         with open("./usr/mm_%s.pickle" % datestr, 'w') as f:
             pickle.dump(self.mmPreds, f)
         with open("./usr/mm3_%s.pickle" % datestr, 'w') as f:
