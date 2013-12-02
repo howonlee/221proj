@@ -163,14 +163,14 @@ class Game:
         data["train"] = []
         quadAllNotes = [map(lambda x: x[0], self.allNotes[x:x+4]) for x in xrange(0, len(self.allNotes), 4)]
         data["train"].append(quadAllNotes)
-        with open("./noteData%s.dat" % datestr, 'w') as f:
+        with open("./usr/noteData%s.dat" % datestr, 'w') as f:
             pickle.dump(data, f)
 
     def makeGraphs(self):
         #save final confusion matrix in textfile
         datestr = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         #delimiter's whacky and stuff to be better at latexing
-        np.savetxt(".confMat%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        np.savetxt("./usr/confMat%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         self.saveNoteData(datestr)
         self.saveAcc(datestr)
         self.saveF1(datestr)
@@ -183,22 +183,22 @@ class Game:
         accList = [float(i) / float(j) for j in totalList for i in correctList]
         plt.plot(accList)
         plt.ylabel("Accuracy Over Time")
-        plt.savefig("./acc%s.png" % datestr, bbox_inches=0) #save this properly instead
+        plt.savefig("./usr/acc%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveF1(self, datestr):
         plt.plot(self.avgF1s)
         plt.ylabel("Average F1 Score Over All Classes")
-        plt.savefig("./f1%s.png" % datestr, bbox_inches=0) #save this properly instead
+        plt.savefig("./usr/f1%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveMemory(self, datestr):
         plt.plot(self.memoryList)
         plt.ylabel("Virtual Memory Used")
-        plt.savefig("./mem%s.png" % datestr, bbox_inches=0) #save this properly instead
+        plt.savefig("./usr/mem%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveCPU(self, datestr):
         plt.plot(self.cpuList)
         plt.ylabel("Percent Available CPU used")
-        plt.savefig("./cpu%s.png" % datestr, bbox_inches=0) #save this properly instead
+        plt.savefig("./usr/cpu%s.png" % datestr, bbox_inches=0) #save this properly instead
 
 if __name__ == "__main__":
     assert(len(sys.argv) < 3)
