@@ -22,7 +22,7 @@ class Game:
         self.noteRects = [] #(note, (left, top, width, height))
         self.soundMapping = utils.initSoundMappings()
         self.confMatList = []
-        self.confMatrix = np.zeros((utils.numNotes, utils.numNotes), dtype=np.int)
+        self.confMatrix = np.zeros((12, 12), dtype=np.int)
         self.avgF1s = []
         self.memoryList = []
         self.cpuList = []
@@ -94,7 +94,8 @@ class Game:
         print "current note: ", utils.midiNoteMapping[noteNum]
         if True in self.predictionState:
             predicted = self.predictionState.index(True)
-            self.confMatrix[noteNum, predicted] += 1
+            self.confMatrix[noteNum % 12, predicted % 12] += 1
+            #learn q learning here
         note = [noteNum, pygame.time.get_ticks(), -1]
         print note
         self.noteRects.append(utils.makeNoteRect(noteNum, 1))
@@ -110,12 +111,6 @@ class Game:
         lastNote = next(x for x in reversed(self.allNotes) if x[0] == noteNum)
         lastNote[2] = pygame.time.get_ticks()
         print lastNote
-
-    def octaveUp(self):
-        pass
-
-    def octaveDown(self):
-        pass
 
     def drawRectSet(self, rects):
         for rect in rects:
@@ -133,7 +128,7 @@ class Game:
     def saveData(self):
         self.saveComputerData()
 
-        self.confMatList.append(self.confMatrix[:,:])
+        self.confMatList.append(self.confMatrix.copy())
         lastConfMat = self.confMatList[-1]
         correctList = [np.diagonal(lastConfMat)[i] for i in xrange(lastConfMat.shape[0])]
         rowSums = list(np.sum(lastConfMat, axis=1)) #sums of each row
@@ -180,23 +175,34 @@ class Game:
     def saveAcc(self, datestr):
         correctList = map(lambda x: x.trace(), self.confMatList)
         totalList = map(lambda x: x.sum(), self.confMatList)
-        accList = [float(i) / float(j) for j in totalList for i in correctList]
+        accList = []
+        for i in xrange(len(totalList)):
+            if totalList[i] > 0.5:
+                accList.append(float(correctList[i]) / float(totalList[i]))
+        print "acclist: ", accList
+        plt.figure(0)
         plt.plot(accList)
         plt.ylabel("Accuracy Over Time")
         plt.savefig("./usr/acc_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveF1(self, datestr):
+        plt.figure(1)
         plt.plot(self.avgF1s)
+        print "f1s: ", self.avgF1s
         plt.ylabel("Average F1 Score Over All Classes")
         plt.savefig("./usr/f1_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveMemory(self, datestr):
+        plt.figure(2)
         plt.plot(self.memoryList)
+        print "memory: ", self.memoryList
         plt.ylabel("Virtual Memory Used")
         plt.savefig("./usr/mem_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveCPU(self, datestr):
+        plt.figure(3)
         plt.plot(self.cpuList)
+        print "cpu: ", self.cpuList
         plt.ylabel("Percent Available CPU used")
         plt.savefig("./usr/cpu_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
@@ -210,7 +216,7 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init(44100, -16, 2, buffer=512)
     pygame.mixer.set_num_channels(12)
-    pygame.time.set_timer(USEREVENT+1, 1000) #for saving data
+    pygame.time.set_timer(USEREVENT+1, 2000) #for saving data
     pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
