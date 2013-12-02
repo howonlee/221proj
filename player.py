@@ -67,7 +67,7 @@ class Game:
         data = map(operator.itemgetter(0), alldata)
         data = map(lambda x: utils.midiNoteMapping[x], data)
         mmVal = makeMMPred(data, self.mmModel)
-        mm3Val = makeMM3Pred(data, self.mm3Model)
+        mm3Val = makeMM3Pred(data, self.mmModel3)
         hmmVal = makeHMMPred(data, self.hmmModel)
         qVal = makeQLearningPred(data, self.qModel)
         time = alldata[-1][1]
@@ -185,13 +185,13 @@ class Game:
 
     def savePredsData(self, datestr):
         with open("./usr/mm_%s.pickle" % datestr, 'w') as f:
-            pickle,dump(self.mmPreds, f)
+            pickle.dump(self.mmPreds, f)
         with open("./usr/mm3_%s.pickle" % datestr, 'w') as f:
-            pickle,dump(self.mm3Preds, f)
+            pickle.dump(self.mm3Preds, f)
         with open("./usr/hmm_%s.pickle" % datestr, 'w') as f:
-            pickle,dump(self.hmmPreds, f)
+            pickle.dump(self.hmmPreds, f)
         with open("./usr/q_%s.pickle" % datestr, 'w') as f:
-            pickle,dump(self.qPreds, f)
+            pickle.dump(self.qPreds, f)
 
     def makeGraphs(self):
         #save final confusion matrix in textfile
