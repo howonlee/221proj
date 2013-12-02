@@ -26,10 +26,11 @@ class Game:
         self.memoryList = []
         self.cpuList = []
         #MODELS#
-        self.mmModel = model.trainMM(model.jsb["train"])
-        self.mmModel3 = model.trainMMOrder3(model.jsb["train"])
-        self.hmmModel = model.trainHMM(model.jsb["train"])
-        self.qModel = model.trainQLearning(model.jsb["train"])
+        mmModel, mmModel3, hmmModel, qModel = model.train(model.clusterData)
+        self.mmModel = mmModel
+        self.mmModel3 = mmModel3
+        self.hmmModel = hmmModel
+        self.qModel = qModel
 
     def predictNotes(self):
         if self.predictor == "MM":
@@ -113,9 +114,10 @@ class Game:
     def saveData(self):
         #need to record memory, cpu data, too
         self.confMatList.append(self.confMatrix[:,:])
-        correctList = [numpy.diagonal(confMatList[-1])[i] for i in xrange(confMatList[-1].shape[0])]
-        rowSums = list(numpy.sum(confMatList[-1], axis=1)) #sums of each row
-        colSums = list(numpy.sum(confMatList[-1], axis=0)) #sums of each column
+        lastConfMat = self.confMatList[-1]
+        correctList = [np.diagonal(lastConfMat)[i] for i in xrange(lastConfMat.shape[0])]
+        rowSums = list(np.sum(lastConfMat, axis=1)) #sums of each row
+        colSums = list(np.sum(lastConfMat, axis=0)) #sums of each column
         precisions = [float(correctList[i]) / float(rowSums[i]) for i in xrange(len(correctList))]
         recalls = [float(correctList[i]) / float(colSums[i]) for i in xrange(len(correctList))]
         f1s = [2*((precisions[i] * recalls[i]) / (precisions[i] + recalls[i])) for i in xrange(len(correctlist))]
