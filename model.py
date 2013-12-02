@@ -116,6 +116,7 @@ def makeMM3Pred(datapoint, model):
     return val
 
 def makeMMKatzPred(datapoint, model):
+    ####todo: actually implement katz smoothing
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
     probs = normalizeVec(model[:, prev1, prev2] + 0.05)
@@ -123,6 +124,7 @@ def makeMMKatzPred(datapoint, model):
     return val
 
 def makeMMKneserNeyPred(datapoint, model):
+    ####todo: actually implement kn smoothing
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
     probs = normalizeVec(model[:, prev1, prev2] + 0.05)
