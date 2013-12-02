@@ -7,7 +7,7 @@ exes/*
 *.out
 *.gz
 confmatrix.txt
-.confmat*
+confmat*
 acc*
 cpu*
 f1*

@@ -53,11 +53,6 @@ class Game:
         #curry into this function
         data = map(operator.itemgetter(0), self.allNotes[-10:])
         data = map(lambda x: utils.midiNoteMapping[x], data)
-        if self.predictor == "Q":
-            reward = 1 #explode properly
-            prevNote = self.allNotes[-1][0]
-            state2 = prevNote
-            self.qModel.learn(prevNote, action1, reward, state2)
         pred = fn(data, model)
         self.predictionState = map(lambda x: False, self.predictionState)
         midiNote = utils.reverseMidiNoteMapping[pred]
@@ -95,6 +90,16 @@ class Game:
         if True in self.predictionState:
             predicted = self.predictionState.index(True)
             self.confMatrix[noteNum % 12, predicted % 12] += 1
+            if self.predictor == "Q":
+                print "begin reward sequence"
+                reward = 0
+                if (noteNum % 12) == (predicted % 12):
+                    print "good reward!"
+                    reward = 1
+                prevNote = self.allNotes[-1][0]
+                print "before learning: ", self.qModel.q
+                self.qModel.learn(prevNote, predicted, reward, noteNum)
+                print "after learning: ", self.qModel.q
             #learn q learning here
         note = [noteNum, pygame.time.get_ticks(), -1]
         print note
