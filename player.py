@@ -225,8 +225,8 @@ if __name__ == "__main__":
     pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
-    pygame.display.set_caption('Music Player')
     g = Game(predictor = predOpt)
+    pygame.display.set_caption('Music Player: Currently Predicting With ' + g.predictor)
     while True:
         windowSurfaceObj.fill(utils.blackColor)
         g.noteRects = utils.updateNoteRects(g.noteRects, g.currNoteState)
