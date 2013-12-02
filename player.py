@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Game:
-    def __init__(self, showPredictions=False, predictor="MM", dataFile="data/SB Chorales.pickle"):
+    def __init__(self, showPredictions=False, predictor="MM", dataFile="data/JSB Chorales.pickle"):
         self.model = Model(dataFile)
         import utils
         self.showPredictions = showPredictions

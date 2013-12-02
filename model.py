@@ -35,7 +35,7 @@ class Model:
         _, self.cluster = self.runKMeans(self.clusterData)
         print "finished running clusters..."
 
-    def runKMeans(data, iters=1, k=3):
+    def runKMeans(self, data, iters=1, k=3):
         numPatches = sum([len(x) for x in data])
         music = np.zeros((numPatches, 4))
         totalidx = 0
@@ -57,7 +57,7 @@ class Model:
         print "clustersId: ", clustersId
         return (centroids, clustersId)
 
-    def train():
+    def train(self):
         mmModel = np.zeros((noteRange+1, noteRange+1))
         mm3Model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
         mmKatzModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
