@@ -11,25 +11,26 @@ print "finished loading pianomidi..."
 nottingham = cPickle.load(file("./data/Nottingham.pickle"))
 clusterData = nottingham["train"]
 """
+maxNote = float("-inf")
+minNote = float("inf")
+noteRange = float("-inf")
 
 class Model:
     def __init__(self, fileName):
+        global maxNote, minNote, noteRange
         self.data = cPickle.load(file("./url/%s" % givenFile))
         print "finished loading data..."
         self.clusterData = self.data["train"]
         self.clusterData = [filter(lambda x: len(x) == 4, l) for l in self.clusterData]
         self.clusterData = [filter(lambda x: not(np.allclose(list(x), [0.,0.,0.,0.])), l) for l in self.clusterData]
-        self.maxNote = float("-inf")
-        self.minNote = float("inf")
-        self.noteRange = float("-inf")
         for ls in self.clusterData:
             for quad in ls:
                 for note in quad:
-                    if note > self.maxNote:
-                        self.maxNote = note
-                    if note < self.minNote:
-                        self.minNote = note
-        self.noteRange = self.maxNote - self.minNote
+                    if note > maxNote:
+                        maxNote = note
+                    if note < minNote:
+                        minNote = note
+        self.noteRange = maxNote - minNote
         print "after filtering: ", sum([len(x) for x in self.clusterData])
         _, self.cluster = self.runKMeans(self.clusterData)
         print "finished running clusters..."
@@ -65,12 +66,12 @@ class Model:
         obs = []
         ground = []
         actions = []
-        for i in range(self.minNote, self.maxNote):
+        for i in range(minNote, maxNote):
             actions.append(i)
         qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
-                obs.append(map(lambda x: x - self.minNote, quad))
+                obs.append(map(lambda x: x - minNote, quad))
                 ground.append([self.cluster[quadidx]] * len(quad))
                 if (quad):
                     for idx, note in enumerate(quad):
@@ -81,12 +82,12 @@ class Model:
                             #q.learn(state1, action1, reward, state2)
                             qModel.learn(prevNote, self.cluster[quadidx], 1, note) #this is a bit wrong
                             #Markov model
-                            mmModel[currNote - self.minNote, prevNote - self.minNote] += 1
+                            mmModel[currNote - minNote, prevNote - minNote] += 1
                         if idx > 2:
                             #Markov model, more order
-                            currNote = note - self.minNote
-                            prevNote = quad[idx - 1] - self.minNote
-                            prevNote2 = quad[idx - 2] - self.minNote
+                            currNote = note - minNote
+                            prevNote = quad[idx - 1] - minNote
+                            prevNote2 = quad[idx - 2] - minNote
                             mm3Model[currNote, prevNote, prevNote2] += 1
                             mmKatzModel[currNote, prevNote, prevNote2] += 1
                             mmKneserNeyModel[currNote, prevNote, prevNote2] += 1

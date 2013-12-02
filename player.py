@@ -73,13 +73,13 @@ class Game:
         if top[1] == utils.NOTE_OFF:
             self.turnNoteOff(top[0])
         if top[1] == utils.OCTAVE_UP:
-            if self.model.maxNote > (self.octave + 2) * 12 + self.model.minNote:
+            if model.maxNote > (self.octave + 2) * 12 + model.minNote:
                 if 1 not in self.currNoteState:
                     self.octave += 1
-                    print "compare maxnote to : ", ((self.octave) * 12) + self.model.minNote
+                    print "compare maxnote to : ", ((self.octave) * 12) + model.minNote
                     print "maxnote is: ", model.maxNote
         if top[1] == utils.OCTAVE_DOWN:
-            if self.model.minNote < self.octave * 12:
+            if model.minNote < self.octave * 12:
                 if 1 not in self.currNoteState:
                     self.octave -= 1
 
