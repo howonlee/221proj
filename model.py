@@ -1,5 +1,6 @@
 import collections, operator, cPickle, math, random
 import numpy as np
+from scipy.cluster.vq import *
 from hmm import HMM
 from q import QLearner
 
@@ -30,14 +31,14 @@ class Model:
                         maxNote = note
                     if note < minNote:
                         minNote = note
-        self.noteRange = maxNote - minNote
+        noteRange = maxNote - minNote
         print "after filtering: ", sum([len(x) for x in self.clusterData])
         _, self.cluster = self.runKMeans(self.clusterData)
         print "finished running clusters..."
 
     def runKMeans(self, data, iters=1, k=3):
         numPatches = sum([len(x) for x in data])
-        music = np.zeros((numPatches, 4))
+        music = np.zeros((numPatches, 4), dtype=np.float32)
         totalidx = 0
         for ls in data:
             for idx, quad in enumerate(ls):
@@ -45,7 +46,9 @@ class Model:
                     assert (len(quad) == 4)
                     music[totalidx] = list(quad)
                     totalidx += 1
-        music = music.T
+        music = whiten(music)
+        centroids, clustersId = kmeans2(music, 3)
+        """
         # This line starts you out with randomly initialized centroids in a matrix
         # with patchSize rows and k columns. Each column is a centroid.
         centroids = np.random.randn(4,k)
@@ -55,6 +58,7 @@ class Model:
             map(lambda c: np.mean([music[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
         print "centroids: ", centroids
         print "clustersId: ", clustersId
+        """
         return (centroids, clustersId)
 
     def train(self):

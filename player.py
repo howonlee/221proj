@@ -1,6 +1,6 @@
 import pygame, sys, operator, psutil, os, pickle, datetime
 from pygame.locals import *
-from model import Model
+from model import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 import matplotlib.pyplot as plt
@@ -30,7 +30,7 @@ class Game:
         self.memoryList = []
         self.cpuList = []
         #MODELS#
-        mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = self.model.train(model.clusterData)
+        mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = self.model.train()
         self.mmModel = mmModel
         self.mmModel3 = mmModel3
         self.hmmModel = hmmModel
@@ -40,17 +40,17 @@ class Game:
 
     def predictNotes(self):
         if self.predictor == "MM":
-            self.predict(self.mmModel, model.makeMMPred)
+            self.predict(self.mmModel, makeMMPred)
         elif self.predictor == "MM3":
-            self.predict(self.mmModel3, model.makeMM3Pred)
+            self.predict(self.mmModel3, makeMM3Pred)
         elif self.predictor == "HMM":
-            self.predict(self.hmmModel, model.makeHMMPred)
+            self.predict(self.hmmModel, makeHMMPred)
         elif self.predictor == "Q":
-            self.predict(self.qModel, model.makeQLearningPred)
+            self.predict(self.qModel, makeQLearningPred)
         elif self.predictor == "KATZ":
-            self.predict(self.mmKatzModel, model.makeMMKatzPred)
+            self.predict(self.mmKatzModel, makeMMKatzPred)
         elif self.predictor == "KN":
-            self.predict(self.mmKneserNeyModel, model.makeMMKneserNeyPred)
+            self.predict(self.mmKneserNeyModel, makeMMKneserNeyPred)
 
     def predict(self, model, fn):
         #curry into this function
@@ -232,6 +232,7 @@ if __name__ == "__main__":
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((1440, 900))
     g = Game(predictor = predOpt, dataFile=dataOpt)
+    import utils
     pygame.display.set_caption('Music Player: Currently Predicting With ' + g.predictor)
     while True:
         windowSurfaceObj.fill(utils.blackColor)
