@@ -32,15 +32,9 @@ class HMM:
                 self.emis[ ground[j], ob[j]] += 1
             j += 1
             self.emis[ ground[j], ob[j] ] += 1
-        if smooth == "Laplace":
-            self.trans = self.trans + smoothParam
-            self.emis = self.emis + smoothParam
-        elif smooth == "Katz":
-            pass
-        elif smooth == "KneserNey":
-            pass
-        elif smooth == "None":
-            pass #do nothing
+        #smooth the HMM probability
+        self.trans = self.trans + smoothParam
+        self.emis = self.emis + smoothParam
 
         #normalize and convert to log
         nplog = np.vectorize(self._convert_to_log)
