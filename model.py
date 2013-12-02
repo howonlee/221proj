@@ -11,92 +11,88 @@ print "finished loading pianomidi..."
 nottingham = cPickle.load(file("./data/Nottingham.pickle"))
 clusterData = nottingham["train"]
 """
-def runKMeans(data, iters=1, k=3):
-    numPatches = sum([len(x) for x in data])
-    music = np.zeros((numPatches, 4))
-    totalidx = 0
-    for ls in data:
-        for idx, quad in enumerate(ls):
-            if (quad and len(quad) == 4): #needed because some quads are null
-                assert (len(quad) == 4)
-                music[totalidx] = list(quad)
-                totalidx += 1
-    music = music.T
-    np.random.shuffle(music)
-    # This line starts you out with randomly initialized centroids in a matrix
-    # with patchSize rows and k columns. Each column is a centroid.
-    centroids = np.random.randn(4,k)
-    clustersId = np.random.randint(k, size=numPatches)
-    for i in range(iters):
-        clustersId = np.array([np.argmin([np.linalg.norm(music[:, p] - centroids[:, c]) for c in range(k)]) for p in range(numPatches)])
-        for c in range(k):
-            mean = np.mean([music[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0)
-            if np.isnan(mean).any():
-                continue
-            centroids[:, c] = mean
-        #map(lambda c: np.mean([music[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
-    print "centroids: ", centroids
-    print "clustersId: ", clustersId
-    return (centroids, clustersId)
 
-pianomidi = cPickle.load(file("./data/Piano-midi.de.pickle"))
-print "finished loading pianomidi..."
-clusterData = pianomidi["train"]
-clusterData = [filter(lambda x: len(x) == 4, l) for l in clusterData]
-clusterData = [filter(lambda x: not(np.allclose(list(x), [0.,0.,0.,0.])), l) for l in clusterData]
-maxNote = float("-inf")
-minNote = float("inf")
-noteRange = float("-inf")
-for ls in clusterData:
-    for quad in ls:
-        for note in quad:
-            if note > maxNote:
-                maxNote = note
-            if note < minNote:
-                minNote = note
-noteRange = maxNote - minNote
+class Model:
+    def __init__(self, fileName):
+        self.data = cPickle.load(file("./url/%s" % givenFile))
+        print "finished loading data..."
+        self.clusterData = self.data["train"]
+        self.clusterData = [filter(lambda x: len(x) == 4, l) for l in self.clusterData]
+        self.clusterData = [filter(lambda x: not(np.allclose(list(x), [0.,0.,0.,0.])), l) for l in self.clusterData]
+        self.maxNote = float("-inf")
+        self.minNote = float("inf")
+        self.noteRange = float("-inf")
+        for ls in self.clusterData:
+            for quad in ls:
+                for note in quad:
+                    if note > self.maxNote:
+                        self.maxNote = note
+                    if note < self.minNote:
+                        self.minNote = note
+        self.noteRange = self.maxNote - self.minNote
+        print "after filtering: ", sum([len(x) for x in self.clusterData])
+        _, self.cluster = self.runKMeans(self.clusterData)
+        print "finished running clusters..."
 
-print "after filtering: ", sum([len(x) for x in clusterData])
-_, cluster = runKMeans(clusterData)
-print "finished running clusters..."
+    def runKMeans(data, iters=1, k=3):
+        numPatches = sum([len(x) for x in data])
+        music = np.zeros((numPatches, 4))
+        totalidx = 0
+        for ls in data:
+            for idx, quad in enumerate(ls):
+                if (quad and len(quad) == 4): #needed because some quads are null
+                    assert (len(quad) == 4)
+                    music[totalidx] = list(quad)
+                    totalidx += 1
+        music = music.T
+        # This line starts you out with randomly initialized centroids in a matrix
+        # with patchSize rows and k columns. Each column is a centroid.
+        centroids = np.random.randn(4,k)
+        clustersId = np.random.randint(k, size=numPatches)
+        for i in range(iters):
+            clustersId = np.array([np.argmin([np.linalg.norm(music[:, p] - centroids[:, c]) for c in range(k)]) for p in range(numPatches)])
+            map(lambda c: np.mean([music[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
+        print "centroids: ", centroids
+        print "clustersId: ", clustersId
+        return (centroids, clustersId)
 
-def train(data):
-    mmModel = np.zeros((noteRange+1, noteRange+1))
-    mm3Model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-    mmKatzModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-    mmKneserNeyModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-    hmmModel = HMM(noteRange+1, noteRange+1)
-    obs = []
-    ground = []
-    actions = []
-    for i in range(minNote, maxNote):
-        actions.append(i)
-    qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
-    for ls in data:
-        for quadidx, quad in enumerate(ls):
-            obs.append(map(lambda x: x - minNote, quad))
-            ground.append([cluster[quadidx]] * len(quad))
-            if (quad):
-                for idx, note in enumerate(quad):
-                    if idx > 0:
-                        currNote = note
-                        prevNote = quad[idx - 1]
-                        #Q learning
-                        #q.learn(state1, action1, reward, state2)
-                        qModel.learn(prevNote, cluster[quadidx], 1, note) #this is a bit wrong
-                        #Markov model
-                        mmModel[currNote - minNote, prevNote - minNote] += 1
-                    if idx > 2:
-                        #Markov model, more order
-                        currNote = note - minNote
-                        prevNote = quad[idx - 1] - minNote
-                        prevNote2 = quad[idx - 2] - minNote
-                        mm3Model[currNote, prevNote, prevNote2] += 1
-                        mmKatzModel[currNote, prevNote, prevNote2] += 1
-                        mmKneserNeyModel[currNote, prevNote, prevNote2] += 1
-    #fuck around with Katz, Kneser-Ney model here to do interpolation, etc
-    hmmModel.learn(obs, ground)
-    return (mmModel, mm3Model, hmmModel, qModel, mmKatzModel, mmKneserNeyModel)
+    def train():
+        mmModel = np.zeros((noteRange+1, noteRange+1))
+        mm3Model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
+        mmKatzModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
+        mmKneserNeyModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
+        hmmModel = HMM(noteRange+1, noteRange+1)
+        obs = []
+        ground = []
+        actions = []
+        for i in range(self.minNote, self.maxNote):
+            actions.append(i)
+        qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
+        for ls in self.clusterData:
+            for quadidx, quad in enumerate(ls):
+                obs.append(map(lambda x: x - self.minNote, quad))
+                ground.append([self.cluster[quadidx]] * len(quad))
+                if (quad):
+                    for idx, note in enumerate(quad):
+                        if idx > 0:
+                            currNote = note
+                            prevNote = quad[idx - 1]
+                            #Q learning
+                            #q.learn(state1, action1, reward, state2)
+                            qModel.learn(prevNote, self.cluster[quadidx], 1, note) #this is a bit wrong
+                            #Markov model
+                            mmModel[currNote - self.minNote, prevNote - self.minNote] += 1
+                        if idx > 2:
+                            #Markov model, more order
+                            currNote = note - self.minNote
+                            prevNote = quad[idx - 1] - self.minNote
+                            prevNote2 = quad[idx - 2] - self.minNote
+                            mm3Model[currNote, prevNote, prevNote2] += 1
+                            mmKatzModel[currNote, prevNote, prevNote2] += 1
+                            mmKneserNeyModel[currNote, prevNote, prevNote2] += 1
+        #fuck around with Katz, Kneser-Ney model here to do interpolation, etc
+        hmmModel.learn(obs, ground)
+        return (mmModel, mm3Model, hmmModel, qModel, mmKatzModel, mmKneserNeyModel)
 
 def normalizeVec(vec):
     vecsum = vec.sum()

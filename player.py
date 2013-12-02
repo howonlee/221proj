@@ -1,11 +1,12 @@
-import pygame, sys, utils, model, operator, psutil, os, pickle, datetime
+import pygame, sys, utils, operator, psutil, os, pickle, datetime
 from pygame.locals import *
+from model import Model
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 import matplotlib.pyplot as plt
 
 class Game:
-    def __init__(self, showPredictions=True, predictor="MM", hidden=False):
+    def __init__(self, showPredictions=False, predictor="MM"):
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
@@ -27,7 +28,8 @@ class Game:
         self.memoryList = []
         self.cpuList = []
         #MODELS#
-        mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = model.train(model.clusterData)
+        self.model = Model("")
+        mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = self.model.train(model.clusterData)
         self.mmModel = mmModel
         self.mmModel3 = mmModel3
         self.hmmModel = hmmModel
@@ -71,13 +73,13 @@ class Game:
         if top[1] == utils.NOTE_OFF:
             self.turnNoteOff(top[0])
         if top[1] == utils.OCTAVE_UP:
-            if model.maxNote > (self.octave + 2) * 12 + model.minNote:
+            if self.model.maxNote > (self.octave + 2) * 12 + self.model.minNote:
                 if 1 not in self.currNoteState:
                     self.octave += 1
-                    print "compare maxnote to : ", ((self.octave) * 12) + model.minNote
+                    print "compare maxnote to : ", ((self.octave) * 12) + self.model.minNote
                     print "maxnote is: ", model.maxNote
         if top[1] == utils.OCTAVE_DOWN:
-            if model.minNote < self.octave * 12:
+            if self.model.minNote < self.octave * 12:
                 if 1 not in self.currNoteState:
                     self.octave -= 1
 
