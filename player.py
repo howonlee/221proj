@@ -1,4 +1,4 @@
-import pygame, sys, utils, operator, psutil, os, pickle, datetime
+import pygame, sys, operator, psutil, os, pickle, datetime
 from pygame.locals import *
 from model import Model
 import pygame.mixer # depends on mixer, you should have SDL_mixer
@@ -6,7 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Game:
-    def __init__(self, showPredictions=False, predictor="MM"):
+    def __init__(self, showPredictions=False, predictor="MM", dataFile="data/SB Chorales.pickle"):
+        self.model = Model(dataFile)
+        import utils
         self.showPredictions = showPredictions
         self.currNoteState = [0] * utils.numNotes
         self.predictionState = [False] * utils.numNotes
@@ -28,7 +30,6 @@ class Game:
         self.memoryList = []
         self.cpuList = []
         #MODELS#
-        self.model = Model("")
         mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = self.model.train(model.clusterData)
         self.mmModel = mmModel
         self.mmModel3 = mmModel3
@@ -214,11 +215,14 @@ class Game:
         plt.savefig("./usr/cpu_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
 if __name__ == "__main__":
-    assert(len(sys.argv) < 3)
+    assert(len(sys.argv) < 4)
     predOpt = "MM"
-    if len(sys.argv) == 2: #means that we have a pred
+    dataOpt = "data/JSB Chorales.pickle"
+    if len(sys.argv) >= 2: #means that we have a pred
         predOpt = str(sys.argv[1])
         print predOpt
+        if len(sys.argv) >= 3:
+            dataOpt = str(sys.argv[2])
     np.set_printoptions(threshold=np.nan)
     pygame.init()
     pygame.mixer.init(44100, -16, 2, buffer=512)
@@ -226,8 +230,8 @@ if __name__ == "__main__":
     pygame.time.set_timer(USEREVENT+1, 2000) #for saving data
     pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
     fpsClock = pygame.time.Clock()
-    windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
-    g = Game(predictor = predOpt)
+    windowSurfaceObj = pygame.display.set_mode((1440, 900))
+    g = Game(predictor = predOpt, dataFile=dataOpt)
     pygame.display.set_caption('Music Player: Currently Predicting With ' + g.predictor)
     while True:
         windowSurfaceObj.fill(utils.blackColor)

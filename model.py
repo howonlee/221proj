@@ -18,7 +18,7 @@ noteRange = float("-inf")
 class Model:
     def __init__(self, fileName):
         global maxNote, minNote, noteRange
-        self.data = cPickle.load(file("./url/%s" % givenFile))
+        self.data = cPickle.load(file("./%s" % fileName))
         print "finished loading data..."
         self.clusterData = self.data["train"]
         self.clusterData = [filter(lambda x: len(x) == 4, l) for l in self.clusterData]
