@@ -53,8 +53,6 @@ class Model:
     def train(self):
         mmModel = np.zeros((noteRange+1, noteRange+1))
         mm3Model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-        mmKatzModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-        mmKneserNeyModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
         hmmModel = HMM(noteRange+1, noteRange+1)
         obs = []
         ground = []
@@ -82,11 +80,8 @@ class Model:
                             prevNote = quad[idx - 1] - minNote
                             prevNote2 = quad[idx - 2] - minNote
                             mm3Model[currNote, prevNote, prevNote2] += 1
-                            mmKatzModel[currNote, prevNote, prevNote2] += 1
-                            mmKneserNeyModel[currNote, prevNote, prevNote2] += 1
-        #fuck around with Katz, Kneser-Ney model here to do interpolation, etc
         hmmModel.learn(obs, ground)
-        return (mmModel, mm3Model, hmmModel, qModel, mmKatzModel, mmKneserNeyModel)
+        return (mmModel, mm3Model, hmmModel, qModel
 
 def normalizeVec(vec):
     vecsum = vec.sum()

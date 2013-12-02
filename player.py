@@ -31,13 +31,11 @@ class Game:
         self.memoryList = []
         self.cpuList = []
         #MODELS#
-        mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = self.model.train()
+        mmModel, mmModel3, hmmModel, qModel = self.model.train()
         self.mmModel = mmModel
         self.mmModel3 = mmModel3
         self.hmmModel = hmmModel
         self.qModel = qModel
-        self.mmKatzModel = mmKatzModel
-        self.mmKneserNeyModel = mmKneserNeyModel
 
     def predictNotes(self):
         if self.predictor == "MM":
