@@ -14,6 +14,7 @@ class Game:
         if predictor not in ["MM", "MM3", "HMM", "Q"]:
             predictor = "MM"
         self.predictor = predictor
+        self.octave = 1 #assumes that note 48 is in the data...
         for note, val in enumerate(self.currNoteState):
             self.keyRects.append(utils.makeNoteRect(note, utils.numNotes))
         self.allNotes = []
@@ -75,9 +76,11 @@ class Game:
         if top[1] == utils.NOTE_OFF:
             self.turnNoteOff(top[0])
         if top[1] == utils.OCTAVE_UP:
-            self.octaveUp()
+            if model.maxNote > self.octave * 12: #check this
+                self.octave += 1
         if top[1] == utils.OCTAVE_DOWN:
-            self.octaveDown()
+            if model.minNote < self.octave * 12: #check this
+                self.octave -= 1
 
     def turnNoteOn(self, noteNum):
         assert(self.currNoteState[noteNum] == 0)
@@ -244,11 +247,11 @@ if __name__ == "__main__":
                 if event.key == K_0:
                     g.showPredictions = not g.showPredictions
                 if event.key in utils.currNoteMapping:
-                    noteNum = utils.currNoteMapping[event.key]
+                    noteNum = utils.currNoteMapping[event.key] + (12 * self.octave)
                     g.addActionQueue(noteNum, utils.NOTE_ON)
             elif event.type == KEYUP:
                 if event.key in utils.currNoteMapping:
-                    noteNum = utils.currNoteMapping[event.key]
+                    noteNum = utils.currNoteMapping[event.key] + (12 * self.octave)
                     g.addActionQueue(noteNum, utils.NOTE_OFF)
             elif event.type == USEREVENT + 1:
                 g.saveData()
