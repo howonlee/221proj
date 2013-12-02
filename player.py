@@ -1,4 +1,4 @@
-import pygame, sys, utils, model, operator, psutil, os, pickle
+import pygame, sys, utils, model, operator, psutil, os, pickle, datetime
 from pygame.locals import *
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
@@ -51,7 +51,7 @@ class Game:
             prevNote = self.allNotes[-1][0]
             state2 = prevNote
             self.qModel.learn(prevNote, action1, reward, state2)
-        pred = fn(data, model[0], model[1])
+        pred = fn(data, model)
         self.predictionState = map(lambda x: False, self.predictionState)
         midiNote = utils.reverseMidiNoteMapping[pred]
         print "midiNote: ", midiNote
@@ -127,12 +127,21 @@ class Game:
         colSums = list(np.sum(lastConfMat, axis=0)) #sums of each column
         precisions = []
         recalls = []
+        f1s = []
         for i in xrange(len(correctList)):
             if rowSums[i] != 0:
-                precisions.append((i, float(correctList[i]) / float(rowSums[i])))
+                precisions.append(float(correctList[i]) / float(rowSums[i]))
+            else:
+                precisions.append(-1)
             if colSums[i] != 0:
-                recalls.append((i, float(correctList[i]) / float(colSums[i])))
-        f1s = [2*((precisions[i] * recalls[i]) / (precisions[i] + recalls[i])) for i in xrange(len(correctlist))]
+                recalls.append(float(correctList[i]) / float(colSums[i]))
+            else:
+                recalls.append(-1)
+        for i in xrange(len(correctList)):
+            if precisions[i] != -1 and recalls[i] != -1:
+                f1s.append(2*((precisions[i] * recalls[i]) / (precisions[i] + recalls[i])))
+        if not f1s:
+            return
         avg = sum(f1s) / len(f1s)
         self.avgF1s.append(avg)
 
@@ -222,7 +231,7 @@ if __name__ == "__main__":
                     g.smooth = "Laplace"
                 if event.key == K_6:
                     g.smooth = "Katz"
-                if event.key == K_:
+                if event.key == K_7:
                     g.smooth = "KneserNey"
                 if event.key == K_g:
                     g.addActionQueue(-1, utils.OCTAVE_DOWN)

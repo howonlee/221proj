@@ -3,6 +3,8 @@ from pygame.locals import *
 
 NOTE_ON = 0
 NOTE_OFF = 1
+OCTAVE_UP = 2
+OCTAVE_DOWN = 3
 
 winHeight = 900
 winWidth = 1440

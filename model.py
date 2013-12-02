@@ -21,8 +21,8 @@ def runKMeans(data, iters=1, k=3):
                 assert (len(quad) == 4)
                 music[totalidx] = list(quad)
                 totalidx += 1
-    np.random.shuffle(music)
     music = music.T
+    np.random.shuffle(music)
     # This line starts you out with randomly initialized centroids in a matrix
     # with patchSize rows and k columns. Each column is a centroid.
     centroids = np.random.randn(4,k)
@@ -97,22 +97,22 @@ def normalizeVec(vec):
     vecsum = vec.sum()
     return vec / vecsum
 
-def makeMMPred(datapoint, model, _):
+def makeMMPred(datapoint, model):
     last = datapoint[-1] - minNote
     probs = normalizeVec(model[:, last] + 0.05)
     val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
-def makeMM3Pred(datapoint, model, _):
+def makeMM3Pred(datapoint, model):
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
     probs = normalizeVec(model[:, prev1, prev2] + 0.05)
     val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
-def makeHMMPred(datapoint, model, _):
+def makeHMMPred(datapoint, model):
     best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint)) #this is probably not the right way to do it
     return best[-1] + minNote
 
-def makeQLearningPred(datapoint, model, _):
+def makeQLearningPred(datapoint, model):
     return model.chooseAction(datapoint[-1])
