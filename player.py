@@ -26,11 +26,13 @@ class Game:
         self.memoryList = []
         self.cpuList = []
         #MODELS#
-        mmModel, mmModel3, hmmModel, qModel = model.train(model.clusterData)
+        mmModel, mmModel3, hmmModel, qModel, mmKatzModel, mmKneserNeyModel = model.train(model.clusterData)
         self.mmModel = mmModel
         self.mmModel3 = mmModel3
         self.hmmModel = hmmModel
         self.qModel = qModel
+        self.mmKatzModel = mmKatzModel
+        self.mmKneserNeyModel = mmKneserNeyModel
 
     def predictNotes(self):
         if self.predictor == "MM":
@@ -41,6 +43,10 @@ class Game:
             self.predict(self.hmmModel, model.makeHMMPred)
         elif self.predictor == "Q":
             self.predict(self.qModel, model.makeQLearningPred)
+        elif self.predictor == "KATZ":
+            self.predict(self.mmKatzModel, model.makeMMKatzPred)
+        elif self.predictor == "KN":
+            self.predict(self.mmKneserNeyModel, model.makeMMKneserNeyPred)
 
     def predict(self, model, fn):
         #curry into this function
@@ -228,11 +234,9 @@ if __name__ == "__main__":
                 if event.key == K_4:
                     g.predictor = "Q"
                 if event.key == K_5:
-                    g.smooth = "Laplace"
+                    g.predictor = "KATZ"
                 if event.key == K_6:
-                    g.smooth = "Katz"
-                if event.key == K_7:
-                    g.smooth = "KneserNey"
+                    g.predictor = "KN"
                 if event.key == K_g:
                     g.addActionQueue(-1, utils.OCTAVE_DOWN)
                 if event.key == K_h:

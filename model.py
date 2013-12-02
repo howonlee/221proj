@@ -63,6 +63,8 @@ print "finished running clusters..."
 def train(data):
     mmModel = np.zeros((noteRange+1, noteRange+1))
     mm3Model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
+    mmKatzModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
+    mmKneserNeyModel = np.zeros((noteRange+1, noteRange+1, noteRange+1))
     hmmModel = HMM(noteRange+1, noteRange+1)
     obs = []
     ground = []
@@ -90,8 +92,10 @@ def train(data):
                         prevNote = quad[idx - 1] - minNote
                         prevNote2 = quad[idx - 2] - minNote
                         mm3Model[currNote, prevNote, prevNote2] += 1
+                        #do some stuff with Katz, Kneser-Ney model here
+    #fuck around with Katz, Kneser-Ney model here
     hmmModel.learn(obs, ground)
-    return (mmModel, mm3Model, hmmModel, qModel)
+    return (mmModel, mm3Model, hmmModel, qModel, mmKatzModel, mmKneserNeyModel)
 
 def normalizeVec(vec):
     vecsum = vec.sum()
@@ -108,6 +112,14 @@ def makeMM3Pred(datapoint, model):
     prev2 = datapoint[-2] - minNote
     probs = normalizeVec(model[:, prev1, prev2] + 0.05)
     val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
+    return val
+
+def makeMMKatzPred(datapoint, model):
+    val = 1
+    return val
+
+def makeMMKneserNeyPred(datapoint, model):
+    val = 1
     return val
 
 def makeHMMPred(datapoint, model):
