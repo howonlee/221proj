@@ -39,7 +39,7 @@ def runKMeans(data, iters=1, k=3):
     print "clustersId: ", clustersId
     return (centroids, clustersId)
 
-pianomidi = cPickle.load(file("./noteData2013-12-01-19-46.dat"))
+pianomidi = cPickle.load(file("./data/Piano-midi.de.pickle"))
 print "finished loading pianomidi..."
 clusterData = pianomidi["train"]
 clusterData = [filter(lambda x: len(x) == 4, l) for l in clusterData]
