@@ -47,13 +47,13 @@ class Model:
                     music[totalidx] = list(quad)
                     totalidx += 1
         music = whiten(music)
-        centroids, clustersId = kmeans2(music, 3)
+        centroids, clustersId = kmeans2(music, 12)
         return (centroids, clustersId)
 
     def train(self):
         mmModel = np.zeros((noteRange+1, noteRange+1))
         mm3Model = np.zeros((noteRange+1, noteRange+1, noteRange+1))
-        hmmModel = HMM(noteRange+1, noteRange+1)
+        hmmModel = HMM(12, noteRange+1)
         obs = []
         ground = []
         actions = []
@@ -81,7 +81,7 @@ class Model:
                             prevNote2 = quad[idx - 2] - minNote
                             mm3Model[currNote, prevNote, prevNote2] += 1
         hmmModel.learn(obs, ground)
-        return (mmModel, mm3Model, hmmModel, qModel
+        return (mmModel, mm3Model, hmmModel, qModel)
 
 def normalizeVec(vec):
     vecsum = vec.sum()

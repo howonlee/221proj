@@ -228,8 +228,8 @@ if __name__ == "__main__":
     windowSurfaceObj = pygame.display.set_mode((1440, 900))
     g = Game(predictor = predOpt, dataFile=dataOpt)
     import utils
-    pygame.display.set_caption('Music Player: Currently Predicting With ' + g.predictor)
     while True:
+        pygame.display.set_caption('Music Player: Currently Predicting With ' + g.predictor)
         windowSurfaceObj.fill(utils.blackColor)
         g.noteRects = utils.updateNoteRects(g.noteRects, g.currNoteState)
         g.drawRectSet(g.keyRects)
