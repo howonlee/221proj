@@ -30,6 +30,10 @@ class Game:
         self.avgF1s = []
         self.memoryList = []
         self.cpuList = []
+        self.mmPreds = []
+        self.mm3Preds = []
+        self.hmmPreds = []
+        self.qPreds = []
         #MODELS#
         mmModel, mmModel3, hmmModel, qModel = self.model.train()
         self.mmModel = mmModel
@@ -56,6 +60,21 @@ class Game:
         midiNote = utils.reverseMidiNoteMapping[pred]
         print "midiNote: ", midiNote
         self.predictionState[midiNote] = True
+        self.predictionSave() #pull this out in another thread?
+
+    def predictionSave(self):
+        alldata = self.allNotes[-10:]
+        data = map(operator.itemgetter(0), alldata)
+        data = map(lambda x: utils.midiNoteMapping[x], data)
+        mmVal = makeMMPred(data, self.mmModel)
+        mm3Val = makeMM3Pred(data, self.mm3Model)
+        hmmVal = makeHMMPred(data, self.hmmModel)
+        qVal = makeQLearningPred(data, self.qModel)
+        time = alldata[-1][1]
+        self.mmPreds.append((mmVal % 12, time))
+        self.mm3Preds.append((mm3Val % 12, time))
+        self.hmmPreds.append((hmmVal % 12, time))
+        self.qPreds.append((qVal % 12, time))
 
     def addActionQueue(self, note, action):
         self.actionQueue.append((note, action))
@@ -164,12 +183,23 @@ class Game:
         with open("./usr/noteData_%s.pickle" % datestr, 'w') as f:
             pickle.dump(data, f)
 
+    def savePredsData(self, datestr):
+        with open("./usr/mm_%s.pickle" % datestr, 'w') as f:
+            pickle,dump(self.mmPreds, f)
+        with open("./usr/mm3_%s.pickle" % datestr, 'w') as f:
+            pickle,dump(self.mm3Preds, f)
+        with open("./usr/hmm_%s.pickle" % datestr, 'w') as f:
+            pickle,dump(self.hmmPreds, f)
+        with open("./usr/q_%s.pickle" % datestr, 'w') as f:
+            pickle,dump(self.qPreds, f)
+
     def makeGraphs(self):
         #save final confusion matrix in textfile
         datestr = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         #delimiter's whacky and stuff to be better at latexing
         np.savetxt("./usr/confMat_%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         self.saveNoteData(datestr)
+        self.savePredsData(datestr)
         self.saveAcc(datestr)
         self.saveF1(datestr)
         self.saveMemory(datestr)
