@@ -111,22 +111,30 @@ class Game:
                 color = utils.getNoteColor(rect[0], self.predictionState[rect[0]])
             pygame.draw.rect(windowSurfaceObj, color, rect[1])
 
+    def saveComputerData(self):
+        pid = os.getpid()
+        proc = psutil.Process(pid)
+        self.memoryList.append(proc.get_memory_info().vms)
+        self.cpuList.append(proc.get_cpu_percent(interval=0)) #this returns immediately
+
     def saveData(self):
-        #need to record memory, cpu data, too
+        self.saveComputerData()
+
         self.confMatList.append(self.confMatrix[:,:])
         lastConfMat = self.confMatList[-1]
         correctList = [np.diagonal(lastConfMat)[i] for i in xrange(lastConfMat.shape[0])]
         rowSums = list(np.sum(lastConfMat, axis=1)) #sums of each row
         colSums = list(np.sum(lastConfMat, axis=0)) #sums of each column
-        precisions = [float(correctList[i]) / float(rowSums[i]) for i in xrange(len(correctList))]
-        recalls = [float(correctList[i]) / float(colSums[i]) for i in xrange(len(correctList))]
+        precisions = []
+        recalls = []
+        for i in xrange(len(correctList)):
+            if rowSums[i] != 0:
+                precisions.append((i, float(correctList[i]) / float(rowSums[i])))
+            if colSums[i] != 0:
+                recalls.append((i, float(correctList[i]) / float(colSums[i])))
         f1s = [2*((precisions[i] * recalls[i]) / (precisions[i] + recalls[i])) for i in xrange(len(correctlist))]
         avg = sum(f1s) / len(f1s)
         self.avgF1s.append(avg)
-        pid = os.getpid()
-        proc = psutil.Process(pid)
-        self.memoryList.append(proc.get_memory_info().vms)
-        self.cpuList.append(proc.get_cpu_percent(interval=0)) #this returns immediately
 
     def saveNoteData(self, datestr):
         data = {}
