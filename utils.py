@@ -1,4 +1,4 @@
-import pygame, sys, numpy, math, operator
+import pygame, sys, numpy, math, operator, model
 from pygame.locals import *
 
 NOTE_ON = 0
@@ -6,16 +6,17 @@ NOTE_OFF = 1
 OCTAVE_UP = 2
 OCTAVE_DOWN = 3
 
+numNotes = model.noteRange + 1
+
 winHeight = 900
 winWidth = 1440
-numNotes = 96 - 43 + 1
 blackColor = pygame.Color(0, 0, 0)
 whiteColor = pygame.Color(255, 255, 255)
 currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_u: 6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
 #the midi mapping is for being a feature for the data
 midiNoteMapping = {}
-for i in range(43, 97):
-    midiNoteMapping[i - 43] = i
+for i in range(model.minNote, model.maxNote):
+    midiNoteMapping[i - model.minNote] = i
 reverseMidiNoteMapping = dict((v,k) for k,v in midiNoteMapping.items())
 
 def argmax(pairs):

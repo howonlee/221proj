@@ -138,7 +138,7 @@ class Game:
             else:
                 recalls.append(-1)
         for i in xrange(len(correctList)):
-            if precisions[i] != -1 and recalls[i] != -1:
+            if precisions[i] != -1 and recalls[i] != -1 and ((precisions[i] + recalls[i]) != 0):
                 f1s.append(2*((precisions[i] * recalls[i]) / (precisions[i] + recalls[i])))
         if not f1s:
             return
@@ -150,7 +150,7 @@ class Game:
         data["train"] = []
         quadAllNotes = [map(lambda x: x[0], self.allNotes[x:x+4]) for x in xrange(0, len(self.allNotes), 4)]
         data["train"].append(quadAllNotes)
-        pickle.dump(data, "./noteData%s" % datestr)
+        pickle.dump(data, file("./noteData%s" % datestr))
 
     def makeGraphs(self):
         #save final confusion matrix in textfile

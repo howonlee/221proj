@@ -1,4 +1,4 @@
-import collections, operator, cPickle, utils, math, random
+import collections, operator, cPickle, math, random
 import numpy as np
 from hmm import HMM
 from q import QLearner
