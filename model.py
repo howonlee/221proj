@@ -92,8 +92,9 @@ def train(data):
                         prevNote = quad[idx - 1] - minNote
                         prevNote2 = quad[idx - 2] - minNote
                         mm3Model[currNote, prevNote, prevNote2] += 1
-                        #do some stuff with Katz, Kneser-Ney model here
-    #fuck around with Katz, Kneser-Ney model here
+                        mmKatzModel[currNote, prevNote, prevNote2] += 1
+                        mmKneserNeyModel[currNote, prevNote, prevNote2] += 1
+    #fuck around with Katz, Kneser-Ney model here to do interpolation, etc
     hmmModel.learn(obs, ground)
     return (mmModel, mm3Model, hmmModel, qModel, mmKatzModel, mmKneserNeyModel)
 
@@ -115,11 +116,17 @@ def makeMM3Pred(datapoint, model):
     return val
 
 def makeMMKatzPred(datapoint, model):
-    val = 1
+    prev1 = datapoint[-1] - minNote
+    prev2 = datapoint[-2] - minNote
+    probs = normalizeVec(model[:, prev1, prev2] + 0.05)
+    val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
 def makeMMKneserNeyPred(datapoint, model):
-    val = 1
+    prev1 = datapoint[-1] - minNote
+    prev2 = datapoint[-2] - minNote
+    probs = normalizeVec(model[:, prev1, prev2] + 0.05)
+    val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
     return val
 
 def makeHMMPred(datapoint, model):
