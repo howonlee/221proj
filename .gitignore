@@ -7,4 +7,5 @@ exes/*
 *.out
 *.gz
 confmatrix.txt
+.confmat*
 .DS_STORE

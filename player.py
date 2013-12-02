@@ -76,11 +76,15 @@ class Game:
         if top[1] == utils.NOTE_OFF:
             self.turnNoteOff(top[0])
         if top[1] == utils.OCTAVE_UP:
-            if model.maxNote > self.octave * 12: #check this
-                self.octave += 1
+            if model.maxNote > (self.octave + 2) * 12 + model.minNote:
+                if 1 not in self.currNoteState:
+                    self.octave += 1
+                    print "compare maxnote to : ", ((self.octave) * 12) + model.minNote
+                    print "maxnote is: ", model.maxNote
         if top[1] == utils.OCTAVE_DOWN:
-            if model.minNote < self.octave * 12: #check this
-                self.octave -= 1
+            if model.minNote < self.octave * 12:
+                if 1 not in self.currNoteState:
+                    self.octave -= 1
 
     def turnNoteOn(self, noteNum):
         assert(self.currNoteState[noteNum] == 0)
@@ -209,7 +213,7 @@ if __name__ == "__main__":
     pygame.mixer.init(44100, -16, 2, buffer=512)
     pygame.mixer.set_num_channels(12)
     pygame.time.set_timer(USEREVENT+1, 1000) #for saving data
-    pygame.time.set_timer(USEREVENT+2, 5) #for playing notes
+    pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((utils.winWidth, utils.winHeight))
     pygame.display.set_caption('Music Player')
@@ -247,11 +251,11 @@ if __name__ == "__main__":
                 if event.key == K_0:
                     g.showPredictions = not g.showPredictions
                 if event.key in utils.currNoteMapping:
-                    noteNum = utils.currNoteMapping[event.key] + (12 * self.octave)
+                    noteNum = utils.currNoteMapping[event.key] + (12 * g.octave)
                     g.addActionQueue(noteNum, utils.NOTE_ON)
             elif event.type == KEYUP:
                 if event.key in utils.currNoteMapping:
-                    noteNum = utils.currNoteMapping[event.key] + (12 * self.octave)
+                    noteNum = utils.currNoteMapping[event.key] + (12 * g.octave)
                     g.addActionQueue(noteNum, utils.NOTE_OFF)
             elif event.type == USEREVENT + 1:
                 g.saveData()
