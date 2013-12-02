@@ -1,6 +1,7 @@
 import pygame, sys, operator, psutil, os, pickle, datetime
 from pygame.locals import *
 from model import *
+import model
 import pygame.mixer # depends on mixer, you should have SDL_mixer
 import numpy as np
 import matplotlib.pyplot as plt
@@ -47,10 +48,6 @@ class Game:
             self.predict(self.hmmModel, makeHMMPred)
         elif self.predictor == "Q":
             self.predict(self.qModel, makeQLearningPred)
-        elif self.predictor == "KATZ":
-            self.predict(self.mmKatzModel, makeMMKatzPred)
-        elif self.predictor == "KN":
-            self.predict(self.mmKneserNeyModel, makeMMKneserNeyPred)
 
     def predict(self, model, fn):
         #curry into this function
@@ -80,7 +77,7 @@ class Game:
                     print "compare maxnote to : ", ((self.octave) * 12) + model.minNote
                     print "maxnote is: ", model.maxNote
         if top[1] == utils.OCTAVE_DOWN:
-            if model.minNote < self.octave * 12:
+            if model.minNote > model.minNote - self.octave * 12:
                 if 1 not in self.currNoteState:
                     self.octave -= 1
 
@@ -256,10 +253,6 @@ if __name__ == "__main__":
                     g.predictor = "HMM"
                 if event.key == K_4:
                     g.predictor = "Q"
-                if event.key == K_5:
-                    g.predictor = "KATZ"
-                if event.key == K_6:
-                    g.predictor = "KN"
                 if event.key == K_g:
                     g.addActionQueue(-1, utils.OCTAVE_DOWN)
                 if event.key == K_h:

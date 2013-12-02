@@ -48,17 +48,6 @@ class Model:
                     totalidx += 1
         music = whiten(music)
         centroids, clustersId = kmeans2(music, 3)
-        """
-        # This line starts you out with randomly initialized centroids in a matrix
-        # with patchSize rows and k columns. Each column is a centroid.
-        centroids = np.random.randn(4,k)
-        clustersId = np.random.randint(k, size=numPatches)
-        for i in range(iters):
-            clustersId = np.array([np.argmin([np.linalg.norm(music[:, p] - centroids[:, c]) for c in range(k)]) for p in range(numPatches)])
-            map(lambda c: np.mean([music[:, p] for p in xrange(numPatches) if clustersId[p] == c], axis=0, out=centroids[:, c]), range(k))
-        print "centroids: ", centroids
-        print "clustersId: ", clustersId
-        """
         return (centroids, clustersId)
 
     def train(self):
@@ -110,22 +99,6 @@ def makeMMPred(datapoint, model):
     return val
 
 def makeMM3Pred(datapoint, model):
-    prev1 = datapoint[-1] - minNote
-    prev2 = datapoint[-2] - minNote
-    probs = normalizeVec(model[:, prev1, prev2] + 0.05)
-    val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
-    return val
-
-def makeMMKatzPred(datapoint, model):
-    ####todo: actually implement katz smoothing
-    prev1 = datapoint[-1] - minNote
-    prev2 = datapoint[-2] - minNote
-    probs = normalizeVec(model[:, prev1, prev2] + 0.05)
-    val = np.random.choice(np.arange(minNote, maxNote+1), p=probs)
-    return val
-
-def makeMMKneserNeyPred(datapoint, model):
-    ####todo: actually implement kn smoothing
     prev1 = datapoint[-1] - minNote
     prev2 = datapoint[-2] - minNote
     probs = normalizeVec(model[:, prev1, prev2] + 0.05)
