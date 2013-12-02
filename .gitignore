@@ -8,4 +8,9 @@ exes/*
 *.gz
 confmatrix.txt
 .confmat*
+acc*
+cpu*
+f1*
+mem*
+noteData*
 .DS_STORE
