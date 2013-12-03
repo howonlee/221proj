@@ -122,10 +122,10 @@ class Game:
         if True in self.predictionState:
             predicted = self.predictionState.index(True)
             self.confMatrix[noteNum % 12, predicted % 12] += 1
-            self.mmConfMatrix[noteNum % 12, self.mmPreds[-1][0] % 12] += 1
-            self.mm3ConfMatrix[noteNum % 12, self.mm3Preds[-1][0] % 12] += 1
-            self.hmmConfMatrix[noteNum % 12, self.hmmPreds[-1][0] % 12] += 1
-            self.qConfMatrix[noteNum % 12, self.qPreds[-1][0] % 12] += 1
+            self.mmConfMatrix[noteNum % 12, self.mmPreds[-1][0]] += 1
+            self.mm3ConfMatrix[noteNum % 12, self.mm3Preds[-1][0]] += 1
+            self.hmmConfMatrix[noteNum % 12, self.hmmPreds[-1][0]] += 1
+            self.qConfMatrix[noteNum % 12, self.qPreds[-1][0]] += 1
             if self.predictor == "Q":
                 print "begin reward sequence"
                 reward = 0
