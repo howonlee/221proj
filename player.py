@@ -34,15 +34,19 @@ class Game:
         self.mmPreds = []
         self.mmConfMatList = []
         self.mmConfMatrix = np.zeros((12, 12), dtype=np.int)
+        self.mmAvgF1s = []
         self.mm3Preds = []
         self.mm3ConfMatList = []
         self.mm3ConfMatrix = np.zeros((12, 12), dtype=np.int)
+        self.mm3AvgF1s = []
         self.hmmPreds = []
         self.hmmConfMatList = []
         self.hmmConfMatrix = np.zeros((12, 12), dtype=np.int)
+        self.hmmAvgF1s = []
         self.qPreds = []
         self.qConfMatList = []
         self.qConfMatrix = np.zeros((12, 12), dtype=np.int)
+        self.qAvgF1s = []
         #MODELS#
         mmModel, mmModel3, hmmModel, qModel = self.model.train()
         self.mmModel = mmModel
@@ -118,6 +122,10 @@ class Game:
         if True in self.predictionState:
             predicted = self.predictionState.index(True)
             self.confMatrix[noteNum % 12, predicted % 12] += 1
+            self.mmConfMatrix[noteNum % 12, self.mmPreds[-1][0] % 12] += 1
+            self.mm3ConfMatrix[noteNum % 12, self.mm3Preds[-1][0] % 12] += 1
+            self.hmmConfMatrix[noteNum % 12, self.hmmPreds[-1][0] % 12] += 1
+            self.qConfMatrix[noteNum % 12, self.qPreds[-1][0] % 12] += 1
             if self.predictor == "Q":
                 print "begin reward sequence"
                 reward = 0
@@ -163,10 +171,20 @@ class Game:
     def saveData(self):
         self.saveComputerData()
         self.confMatList.append(self.confMatrix.copy())
-        lastConfMat = self.confMatList[-1]
-        correctList = [np.diagonal(lastConfMat)[i] for i in xrange(lastConfMat.shape[0])]
-        rowSums = list(np.sum(lastConfMat, axis=1)) #sums of each row
-        colSums = list(np.sum(lastConfMat, axis=0)) #sums of each column
+        self.mmConfMatList.append(self.mmConfMatrix.copy())
+        self.mm3ConfMatList.append(self.mm3ConfMatrix.copy())
+        self.hmmConfMatList.append(self.hmmConfMatrix.copy())
+        self.qConfMatList.append(self.qConfMatrix.copy())
+        self.calcF1s(self.confMatList[-1], self.avgF1s)
+        self.calcF1s(self.mmConfMatList[-1], self.mmAvgF1s)
+        self.calcF1s(self.mm3ConfMatList[-1], self.mm3AvgF1s)
+        self.calcF1s(self.hmmConfMatList[-1], self.hmmAvgF1s)
+        self.calcF1s(self.qConfMatList[-1], self.qAvgF1s)
+
+    def calcF1s(self, confMat, l):
+        correctList = [np.diagonal(confMat)[i] for i in xrange(confMat.shape[0])]
+        rowSums = list(np.sum(confMat, axis=1)) #sums of each row
+        colSums = list(np.sum(confMat, axis=0)) #sums of each column
         precisions = []
         recalls = []
         f1s = []
@@ -185,7 +203,7 @@ class Game:
         if not f1s:
             return
         avg = sum(f1s) / len(f1s)
-        self.avgF1s.append(avg)
+        l.append(avg)
 
     def saveNoteData(self, datestr):
         data = {}
@@ -213,19 +231,22 @@ class Game:
         np.savetxt("./usr/confMat_%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         self.saveNoteData(datestr)
         self.savePredsData(datestr)
-        self.savePredsAcc(datestr)
-        self.saveAcc(datestr)
-        self.savePredsF1(datestr)
-        self.saveF1(datestr)
+        self.saveAcc("./usr/acc_%s.png", datestr, self.confMatList)
+        self.saveAcc("./usr/acc_mm_%s.png", datestr, self.mmConfMatList, title="MM Accuracy Over Time")
+        self.saveAcc("./usr/acc_mm3_%s.png", datestr, self.mm3ConfMatList, title="Higher Order MM Accuracy Over Time")
+        self.saveAcc("./usr/acc_hmm_%s.png", datestr, self.hmmConfMatList, title="HMM Accuracy Over Time")
+        self.saveAcc("./usr/acc_q_%s.png", datestr, self.qConfMatList, title="Q Learning Accuracy Over Time")
+        self.saveF1("./usr/f1_%s.png", datestr, self.avgF1s)
+        self.saveF1("./usr/f1_mm_%s.png", datestr, self.mmAvgF1s, title="MM Average F1 Score")
+        self.saveF1("./usr/f1_mm3_%s.png", datestr, self.mm3AvgF1s, title="MM3 Average F1 Score")
+        self.saveF1("./usr/f1_hmm_%s.png", datestr, self.hmmAvgF1s, title="HMM Average F1 Score")
+        self.saveF1("./usr/f1_q_%s.png", datestr, self.qAvgF1s, title="Q Average F1 Score")
         self.saveMemory(datestr)
         self.saveCPU(datestr)
 
-    def savePredsAcc(self, datestr):
-        pass
-
-    def saveAcc(self, datestr):
-        correctList = map(lambda x: x.trace(), self.confMatList)
-        totalList = map(lambda x: x.sum(), self.confMatList)
+    def saveAcc(self, namestr, datestr, confMatList, title="Accuracy Over Time"):
+        correctList = map(lambda x: x.trace(), confMatList)
+        totalList = map(lambda x: x.sum(), confMatList)
         accList = []
         for i in xrange(len(totalList)):
             if totalList[i] > 0.5:
@@ -233,20 +254,17 @@ class Game:
         print "acclist: ", accList
         plt.figure(0)
         plt.plot(accList)
-        plt.ylabel("Accuracy Over Time")
+        plt.ylabel(title)
         plt.xlabel("Time(Seconds)")
-        plt.savefig("./usr/acc_%s.png" % datestr, bbox_inches=0) #save this properly instead
+        plt.savefig(namestr % datestr, bbox_inches=0) #save this properly instead
 
-    def savePredsF1(self, datestr):
-        pass
-
-    def saveF1(self, datestr):
+    def saveF1(self, namestr, datestr, f1List, title="Average F1 Score Over All Classes"):
         plt.figure(1)
-        plt.plot(self.avgF1s)
-        print "f1s: ", self.avgF1s
-        plt.ylabel("Average F1 Score Over All Classes")
+        plt.plot(f1List)
+        print "f1s: ", f1List
+        plt.ylabel(title)
         plt.xlabel("Time(Seconds)")
-        plt.savefig("./usr/f1_%s.png" % datestr, bbox_inches=0) #save this properly instead
+        plt.savefig(namestr % datestr, bbox_inches=0) #save this properly instead
 
     def saveMemory(self, datestr):
         plt.figure(2)
