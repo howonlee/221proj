@@ -229,6 +229,10 @@ class Game:
         datestr = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         #delimiter's whacky and stuff to be better at latexing
         np.savetxt("./usr/confMat_%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        np.savetxt("./usr/mmConfMat_%s.txt" % datestr, self.mmConfMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        np.savetxt("./usr/mm3ConfMat_%s.txt" % datestr, self.mm3ConfMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        np.savetxt("./usr/hmmConfMat_%s.txt" % datestr, self.hmmConfMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
+        np.savetxt("./usr/qConfMat_%s.txt" % datestr, self.qConfMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         self.saveNoteData(datestr)
         self.savePredsData(datestr)
         self.saveAcc("./usr/acc_%s.png", datestr, self.confMatList)
