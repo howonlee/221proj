@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Game:
-    def __init__(self, showPredictions=False, predictor="MM", dataFile="data/JSB Chorales.pickle"):
+    def __init__(self, showPredictions=False, predictor="MM", dataFile="data/noteData_ex_random.pickle"):
         self.model = Model(dataFile)
         import utils
         self.showPredictions = showPredictions
@@ -221,6 +221,7 @@ class Game:
         plt.figure(0)
         plt.plot(accList)
         plt.ylabel("Accuracy Over Time")
+        plt.xlabel("Time(Seconds)")
         plt.savefig("./usr/acc_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveF1(self, datestr):
@@ -228,6 +229,7 @@ class Game:
         plt.plot(self.avgF1s)
         print "f1s: ", self.avgF1s
         plt.ylabel("Average F1 Score Over All Classes")
+        plt.xlabel("Time(Seconds)")
         plt.savefig("./usr/f1_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveMemory(self, datestr):
@@ -235,6 +237,7 @@ class Game:
         plt.plot(self.memoryList)
         print "memory: ", self.memoryList
         plt.ylabel("Virtual Memory Used")
+        plt.xlabel("Time(Seconds)")
         plt.savefig("./usr/mem_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
     def saveCPU(self, datestr):
@@ -242,12 +245,13 @@ class Game:
         plt.plot(self.cpuList)
         print "cpu: ", self.cpuList
         plt.ylabel("Percent Available CPU used")
+        plt.xlabel("Time(Seconds)")
         plt.savefig("./usr/cpu_%s.png" % datestr, bbox_inches=0) #save this properly instead
 
 if __name__ == "__main__":
     assert(len(sys.argv) < 4)
     predOpt = "MM"
-    dataOpt = "data/JSB Chorales.pickle"
+    dataOpt = "data/noteData_ex_random.pickle"
     if len(sys.argv) >= 2: #means that we have a pred
         predOpt = str(sys.argv[1])
         print predOpt
@@ -257,7 +261,7 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init(44100, -16, 2, buffer=512)
     pygame.mixer.set_num_channels(12)
-    pygame.time.set_timer(USEREVENT+1, 2000) #for saving data
+    pygame.time.set_timer(USEREVENT+1, 1000) #for saving data
     pygame.time.set_timer(USEREVENT+2, 1) #for playing notes
     fpsClock = pygame.time.Clock()
     windowSurfaceObj = pygame.display.set_mode((1440, 900))
