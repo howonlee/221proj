@@ -153,7 +153,6 @@ class Game:
 
     def saveData(self):
         self.saveComputerData()
-
         self.confMatList.append(self.confMatrix.copy())
         lastConfMat = self.confMatList[-1]
         correctList = [np.diagonal(lastConfMat)[i] for i in xrange(lastConfMat.shape[0])]
@@ -188,7 +187,7 @@ class Game:
             pickle.dump(data, f)
 
     def savePredsData(self, datestr):
-        #we also want plots
+        #we also want plots of f1, acc for each pred, instead of just one as currently
         with open("./usr/mm_%s.pickle" % datestr, 'w') as f:
             pickle.dump(self.mmPreds, f)
         with open("./usr/mm3_%s.pickle" % datestr, 'w') as f:
