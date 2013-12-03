@@ -30,10 +30,19 @@ class Game:
         self.avgF1s = []
         self.memoryList = []
         self.cpuList = []
+
         self.mmPreds = []
+        self.mmConfMatList = []
+        self.mmConfMatrix = np.zeros((12, 12), dtype=np.int)
         self.mm3Preds = []
+        self.mm3ConfMatList = []
+        self.mm3ConfMatrix = np.zeros((12, 12), dtype=np.int)
         self.hmmPreds = []
+        self.hmmConfMatList = []
+        self.hmmConfMatrix = np.zeros((12, 12), dtype=np.int)
         self.qPreds = []
+        self.qConfMatList = []
+        self.qConfMatrix = np.zeros((12, 12), dtype=np.int)
         #MODELS#
         mmModel, mmModel3, hmmModel, qModel = self.model.train()
         self.mmModel = mmModel
@@ -204,10 +213,15 @@ class Game:
         np.savetxt("./usr/confMat_%s.txt" % datestr, self.confMatrix, "%d", delimiter=" & ", newline=' \\\\\n')
         self.saveNoteData(datestr)
         self.savePredsData(datestr)
+        self.savePredsAcc(datestr)
         self.saveAcc(datestr)
+        self.savePredsF1(datestr)
         self.saveF1(datestr)
         self.saveMemory(datestr)
         self.saveCPU(datestr)
+
+    def savePredsAcc(self, datestr):
+        pass
 
     def saveAcc(self, datestr):
         correctList = map(lambda x: x.trace(), self.confMatList)
@@ -222,6 +236,9 @@ class Game:
         plt.ylabel("Accuracy Over Time")
         plt.xlabel("Time(Seconds)")
         plt.savefig("./usr/acc_%s.png" % datestr, bbox_inches=0) #save this properly instead
+
+    def savePredsF1(self, datestr):
+        pass
 
     def saveF1(self, datestr):
         plt.figure(1)
