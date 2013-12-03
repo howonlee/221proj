@@ -214,7 +214,6 @@ class Game:
             pickle.dump(data, f)
 
     def savePredsData(self, datestr):
-        #we also want plots of f1, acc for each pred, instead of just one as currently
         with open("./usr/mm_%s.pickle" % datestr, 'w') as f:
             pickle.dump(self.mmPreds, f)
         with open("./usr/mm3_%s.pickle" % datestr, 'w') as f:
@@ -259,16 +258,20 @@ class Game:
         plt.figure(0)
         plt.plot(accList)
         plt.ylabel(title)
+        plt.ylim(0, 1)
         plt.xlabel("Time(Seconds)")
         plt.savefig(namestr % datestr, bbox_inches=0) #save this properly instead
+        plt.close()
 
     def saveF1(self, namestr, datestr, f1List, title="Average F1 Score Over All Classes"):
         plt.figure(1)
         plt.plot(f1List)
         print "f1s: ", f1List
         plt.ylabel(title)
+        plt.ylim(0, 1)
         plt.xlabel("Time(Seconds)")
         plt.savefig(namestr % datestr, bbox_inches=0) #save this properly instead
+        plt.close()
 
     def saveMemory(self, datestr):
         plt.figure(2)
