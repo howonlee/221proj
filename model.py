@@ -4,14 +4,6 @@ from scipy.cluster.vq import *
 from hmm import HMM
 from q import QLearner
 
-"""
-muse = cPickle.load(file("./data/MuseData.pickle"))
-print "finished loading muse..."
-pianomidi = cPickle.load(file("./data/Piano-midi.de.pickle"))
-print "finished loading pianomidi..."
-nottingham = cPickle.load(file("./data/Nottingham.pickle"))
-clusterData = nottingham["train"]
-"""
 maxNote = float("-inf")
 minNote = float("inf")
 noteRange = float("-inf")

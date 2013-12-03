@@ -12,7 +12,7 @@ winHeight = 900
 winWidth = 1440
 blackColor = pygame.Color(0, 0, 0)
 whiteColor = pygame.Color(255, 255, 255)
-currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_u: 6, K_j: 7, K_o: 8, K_k: 9, K_l: 11, K_SEMICOLON:12}
+currNoteMapping = {K_a : 0, K_w: 1, K_s : 2, K_r : 3, K_d: 4, K_f: 5, K_u: 6, K_j: 7, K_i: 8, K_k: 9, K_o: 10, K_l: 11, K_SEMICOLON:12}
 #the midi mapping is for being a feature for the data
 midiNoteMapping = {}
 for i in range(model.minNote, model.maxNote+1):
@@ -61,8 +61,11 @@ def updateNoteRects(noteRects, currNoteState):
 """
 NOTE TONE GENERATION
 """
-freqs = [523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.0, 932.32, 987.76]
-freqs = freqs + map(lambda x: x * 2, freqs) + map(lambda x: x * 4, freqs)
+#freqs = [523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.0, 932.32, 987.76]
+freqs = [261.625, 277.185, 293.665, 311.125, 329.63, 349.23, 370, 392, 415.305, 440.0, 466.16, 493.88]
+for i in range(1, 10):
+    freqs = freqs + map(lambda x: x * (2 ** i), freqs)
+#freqs = freqs + map(lambda x: x * 2, freqs) + map(lambda x: x * 4, freqs)
 duration = 1.0 #seconds
 sample_rate = 44100
 n_samples = int(round(duration * sample_rate))
@@ -72,5 +75,5 @@ for i in range(numNotes):
     max_sample = 2 ** (16 - 1) - 1
     for s in range(n_samples):
         t = float(s) / sample_rate #time in seconds
-        bufs[i][s][0] = int(round(max_sample*(math.cos(2*math.pi*freqs[i % 12]*t)) ** 20))
-        bufs[i][s][1] = int(round(max_sample*(math.cos(2*math.pi*freqs[i % 12]*t)) ** 20))
+        bufs[i][s][0] = int(round(max_sample*(math.cos(2*math.pi*freqs[i]*t)) ** 20))
+        bufs[i][s][1] = int(round(max_sample*(math.cos(2*math.pi*freqs[i]*t)) ** 20))
