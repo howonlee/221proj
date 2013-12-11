@@ -12,15 +12,20 @@
 \section*{Real-Time Note Recommendation}
 
 \subsection*{Problem Definition}
-Given previous set of notes, predict a next tone within 12 possible tones in real time
+Want to do this out of interest in music.
+Given previous set of notes, predict a next tone within 12 possible tones in real time.
+Predictions taken as drawing from a probability distribution.
+Want to do this real-time as perhaps a system for the person playing in realtime.
+Also want a real piano player's opinion on this, so I got J. Li
 
 \subsection*{Challenges And Unproductive Approaches}
-Actually quite hard
+%%what when where why
+Actually quite hard as a task, given that I actually don't have any domain expertise that I knew about.
 RBM didn't work so well, too slow
 Non-laplace smoothing didn't even make a qualitative difference
 
 \subsection*{Hypothesis}
-
+%%what when where why
 Testable hypotheses
 \begin{enumerate}
     \item The predictor will do better than random
@@ -29,6 +34,7 @@ Testable hypotheses
 \end{enumerate}
 
 \subsection*{Methods}
+%%what when where why
 Training dataset: stored notes from a piano player playing
 Test dataset: the same piano player playing something different
 The piano player could not see the predictions that the system makes in either case, to allow the test set to work
@@ -47,10 +53,12 @@ Hidden states were tried:
 2. Difference between previous note
 
 \subsection*{Results and Analysis}
+%%what when where why
 Hypothesis I sustained
 Hypothesis II not sustained for quantative (accuracy measure on prediction), but qualitative (which predictions they did make), did make a difference
 
 \subsection*{Conclusion}
+%%what when where why
 A predictor for real-time note recommendation was made. Although it was not incredible accurate, it was better than random. A variety of models were considered. These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made.
 
 Try the program out to see the qualitative difference.
