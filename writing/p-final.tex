@@ -11,52 +11,52 @@
 \maketitle
 \section*{Real-Time Note Recommendation}
 
-\subsection*{Motivation}
 \subsection*{Problem Definition}
-The system will take in computer keyboard input and play music as if it were a MIDI keyboard. This by itself is not too terribly impressive, but what it should also do is to give suggestions in real-time for what notes to play, for the player who wants a little bit of help improvising.
+Given previous set of notes, predict a next tone within 12 possible tones in real time
 
-There are two ways of looking at the task there: perhaps it is giving suggestions in real-time for what notes to play based upon a corpus of stored MIDI music data, in which case the actual task would be time series generation. Or perhaps it is being rewarded or punished by the person at the keyboard playing its notes, in which case it would be doing reinforcement learning.
-
-In either case, it seems to me that the best measurement for the success of the system will be the percentage of time that the person at the keyboard plays notes in accordance with the suggestions. If we look at the task as a time series generation, that ends up being the percentage of time that the person at the keyboard is in accordance with the generated time series. All that needs to be done would be to hide the recommendations when we want to evaluate the system and show them when we want to \emph{use} the system. Of course, there has to also be a large qualitative component in the actual aesthetics of what such a system generates, but this is what we can put on a chart. 
-
-\subsection*{Challenges}
+\subsection*{Challenges And Unproductive Approaches}
+Actually quite hard
+RBM didn't work so well, too slow
+Non-laplace smoothing didn't even make a qualitative difference
 
 \subsection*{Hypothesis}
-It seems to be the case that the closest analogy to this task is word-completion or word-modelling with a small vocabulary. This is because the musical notes can be seen to be the characters of words, or musical phrases seen to be words entire. This task also seems amenable to inclusion under the reinforcement learning paradigm, because it seems that the actual behavior of the player is important as a feedback mechanism. Therefore, there should be two hypotheses which can be tested:
 
+Testable hypotheses
 \begin{enumerate}
-    \item It is the case that the models that people use for language modeling will work for this task.
-    \item It is the case that reinforcment learning is a good AI paradigm for the task.
+    \item The predictor will do better than random
+    \item The predictor will also do better than prediction from non-appropriate data (JS Bach)
+    \item The model matters in prediction task (qualitative, quantitative results)
 \end{enumerate}
 
-To test the full assumptions behind the first hypothesis is too big a task. What I will actually investigate for the first task for this project can be two things:
+\subsection*{Methods}
+Training dataset: stored notes from a piano player playing
+Test dataset: the same piano player playing something different
+The piano player could not see the predictions that the system makes in either case, to allow the test set to work
 
-\begin{enumerate}
-    \item Whether the Kneser-Ney smoothing give us better performance for this task than other smoothing methods, just as it does compared to other smoothing methods for language models.
-    \item Whether we can make the generation of pitches better by incorporating hidden state.
-\end{enumerate}
+Markov Model: states are notes, to be used as baseline. I also did a higher-order Markov Model.
 
-So three statements to evaluate, in all.
+\subsubsection*{Hidden Markove Model State}
+Observed states are notes in HMM.
+Hidden states were tried:
+1. Previous note
+2. First note of 4-note run
+3. Difference between previous note
 
-The baseline here in both cases will be the unsmoothed 3-gram Markov model. 
-
-\subsection*{Approaches}
-
-\subsubsection*{Hidden State}
-The sequence of pitches is a time series, and has state in that there is a history of pitches. It also seems to be the case that the underlying process which is generating the pitches might have structure, even though we don't see it. Therefore, it might be that there is hidden state. In testing the idea that our performance would be improved by hidden state, it seems that we need to prescribe an underlying state\cite{Rabiner}. It seems that the underlying state would be the chord from which each pitch is taken. That is, the hidden state in the HMM would be what chord that we're currently in, and each chord would have emission probabilities for emitting the pitch that we are currently on, trained by EM. There are many other, better ways to do this, but this is a very simple one that has been previously tried in the literature\cite{Schulze}.
-
-\subsubsection*{Reinforcement Learning}
-
-It seems tenable to back Q-learning with a table, since the state space for this model will not be complicated. The reward for the Q-learning will be whether or not the player actually takes the recommendation of a pitch. The possible states for the MDP for the algorithm is the pitches, and the actions are productions from pitch to pitch. Therefore, the policy can be learned by Q-learning.
-
-\subsection*{Baseline System}
-I have implemented the keyboard music part of the system. I will be using the pre-cleaned piano-roll MIDI files from the LISA lab found here:
-
-\url{http://www-etud.iro.umontreal.ca/~boulanni/icml2012}
-
-Previously, I thought that Naive Bayes would do as a baseline, but the performance was so terrible (the classifier only predicted that the next note would be C, F or G all the time), that I switched the baseline.
+\subsubsection*{Reinforcement Learning State}
+1. Previous note
+2. Difference between previous note
 
 \subsection*{Results and Analysis}
+Hypothesis I sustained
+Hypothesis II not sustained for quantative (accuracy measure on prediction), but qualitative (which predictions they did make), did make a difference
+
+\subsection*{Conclusion}
+A predictor for real-time note recommendation was made. Although it was not incredible accurate, it was better than random. A variety of models were considered. These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made.
+
+Try the program out to see the qualitative difference.
+
+\subsection*{Acknowledgement}
+Thanks to J. Li, who made the training and test data by playing the keyboard program.
 
 \begin{thebibliography}{9}%no more than 9 references
 
