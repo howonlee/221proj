@@ -44,31 +44,32 @@ Markov Model: states are notes, to be used as baseline. I also did a higher-orde
 \subsubsection*{Hidden Markov Model State}
 Observed states are notes in HMM.
 Hidden states were tried:
-1. Previous note, because %%%that could also be construed as a hidden state?
+1. Previous note, because that could be construed as a hidden state, really
 2. First note of 4-note run, because it seemed that a lot of four-note runs produce a certain class of those short sequences (licks)
 3. Difference between previous note, because, although it was normalized, a tritone sounds much the same anywhere.
 
 Trained forward-backwards. Predictions made by Viterbi, no variations on these because the training method itself shouldn't mess things up too bad: it was fast enough for the current system
 
 \subsubsection*{Reinforcement Learning State}
+Q-learning was done with epsilong-greedy method. Epsilon was 0.1, alpha was 0.2, gamma was 0.9. %%%explain what those are, why those
 1. Previous note.
 2. Difference between previous note.
 Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
-Only Q-learning was done, because it was a reinforcement learning task: to make an MDP only for it would be fairly silly because there is not really a great specification of the transition probabilities: we could test on test data, but that's bad because %%%%
-
 \subsection*{Results and Analysis}
-Hypothesis I sustained, because %%%
-Hypothesis II not sustained for quantative (accuracy measure on prediction), because %%%%
-However, qualitative (which predictions they did make), did make a difference, because %%%
+Note that the statistical test I used was the Kolmogorov-Smirnov test.
+
+Hypothesis I sustained, because there was a statistically significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a statistically significantly significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones. %datadatadata
+Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the models. %datattatatatat
+However, qualitative (which predictions they did make), did make a difference. Here, once can tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
 
 \subsection*{Conclusion}
 A predictor for real-time note recommendation was made.
-Although it was not incredible accurate, it was better than random, because %%%
-A variety of models were considered, because %%%
-These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made. I think this is because %%%%
+Although it was not incredible accurate, it was better than random.
+A variety of models were considered.
+These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made.
 
-Try the program out to see the qualitative difference.
+Try the program out to see the qualitative difference, if you wish.
 
 \subsection*{Acknowledgement}
 Thanks to J. Li, who made the training and test data by playing the keyboard program.
