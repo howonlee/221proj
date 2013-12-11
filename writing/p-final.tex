@@ -21,45 +21,49 @@ Also want a real piano player's opinion on this, so I got J. Li
 \subsection*{Challenges And Unproductive Approaches}
 %%what when where why
 Actually quite hard as a task, given that I actually don't have any domain expertise that I knew about.
-RBM didn't work so well, too slow
-Non-laplace smoothing didn't even make a qualitative difference
+I thought RBM would be a fairly interesting way of going about things, because it should be something like a good graphical method that would cluster things. RBM didn't work so well, too slow
+Non-laplace smoothing didn't make qualitative or quantitative difference, even thought I thought it would.
 
 \subsection*{Hypothesis}
-%%what when where why
 Testable hypotheses
 \begin{enumerate}
     \item The predictor will do better than random
     \item The predictor will also do better than prediction from non-appropriate data (JS Bach)
     \item The model matters in prediction task (qualitative, quantitative results)
 \end{enumerate}
+So I have to test the predictor versus random, the predictor versus prediction from a non-appropriate dataset, and I have to compare the models in the prediction task in two ways: qualitative and quantitative.
 
 \subsection*{Methods}
-%%what when where why
-Training dataset: stored notes from a piano player playing
-Test dataset: the same piano player playing something different
-The piano player could not see the predictions that the system makes in either case, to allow the test set to work
+Training dataset: stored notes from a piano player playing, also JS Bach.
+Test dataset: the same piano player playing something different, extempore.
+The piano player could not see the predictions that the system makes in either case, because the test set would be silly otherwise.
 
-Markov Model: states are notes, to be used as baseline. I also did a higher-order Markov Model.
+Markov Model: states are notes, to be used as baseline. I also did a higher-order Markov Model, because %%%
 
-\subsubsection*{Hidden Markove Model State}
+\subsubsection*{Hidden Markov Model State}
 Observed states are notes in HMM.
 Hidden states were tried:
-1. Previous note
-2. First note of 4-note run
-3. Difference between previous note
+1. Previous note, because %%%
+2. First note of 4-note run, because %%%
+3. Difference between previous note, because %%%
+
+Trained forward-backwards. Predictions made by Viterbi, no variations on these because the training method itself shouldn't mess things up too bad: it was fast enough for the current system
 
 \subsubsection*{Reinforcement Learning State}
-1. Previous note
-2. Difference between previous note
+1. Previous note, because %%%
+2. Difference between previous note, because %%%
 
+Only Q-learning was done, because it was a reinforcement learning task: to make an MDP only for it would be fairly silly becaseu %%%%
 \subsection*{Results and Analysis}
-%%what when where why
-Hypothesis I sustained
-Hypothesis II not sustained for quantative (accuracy measure on prediction), but qualitative (which predictions they did make), did make a difference
+Hypothesis I sustained, because %%%
+Hypothesis II not sustained for quantative (accuracy measure on prediction), because %%%%
+However, qualitative (which predictions they did make), did make a difference, because %%%
 
 \subsection*{Conclusion}
-%%what when where why
-A predictor for real-time note recommendation was made. Although it was not incredible accurate, it was better than random. A variety of models were considered. These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made.
+A predictor for real-time note recommendation was made.
+Although it was not incredible accurate, it was better than random, because %%%
+A variety of models were considered, because %%%
+These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made. I think this is because %%%%
 
 Try the program out to see the qualitative difference.
 
