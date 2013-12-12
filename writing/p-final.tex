@@ -34,7 +34,7 @@ So I have to test the predictor versus random, the predictor versus prediction f
 
 \subsection*{Methods}
 Training dataset: stored notes from a piano player playing, also JS Bach.
-Test dataset: the same piano player playing something different, extempore.
+Test dataset: the same piano player playing something different, extempore. %%how much data, what data, the 12 notes, etc
 The piano player could not see the predictions that the system makes in either case, because the test set would be silly otherwise. I tried showing it, and basically they just followed the prediction, no matter how silly it was.
 
 Probability distributions were Laplace smoothed with $\alpha = 0.05$.
@@ -57,7 +57,7 @@ Q-learning was done with epsilong-greedy method. Epsilon was 0.1, alpha was 0.2,
 Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
 \subsection*{Results and Analysis}
-Note that the statistical test I used was the Kolmogorov-Smirnov test.
+Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test. %%%figure out doing it properly
 
 Hypothesis I sustained, because there was a statistically significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a statistically significantly significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones. %datadatadata
 Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the models. %datattatatatat
