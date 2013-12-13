@@ -1,6 +1,7 @@
 #for alternate q and hmm state configs
 #I did this more manually previously, but script is better
 import scipy, cPickle, sys, random, collections, itertools
+import operator
 from scipy import stats
 import numpy as np
 from hmm import HMM
@@ -45,18 +46,18 @@ class Model:
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
                 tempquad = map(lambda x: x - minNote, quad)
-                obs.append(tempquad[:])
-                obs2.append(tempquad[:])
+                obs.append(tempquad[1:])
+                obs2.append(tempquad[1:])
                 tempquad2 = map(lambda x: (x - minNote) % 12, quad)
-                notediff = [tempquad[0] - tempquad[1], tempquad[1] - tempquad[2], tempquad[2] - tempquad[3], tempquad[3] - tempquad[4]]
+                notediff = [tempquad2[0] - tempquad2[1], tempquad2[1] - tempquad2[2], tempquad2[2] - tempquad2[3]]
                 notediff = map(lambda x: abs(x), notediff)
                 ground.append(notediff) #difference between prev note and note before that
-                ground2.append(tempquad2[0] * 4)
+                ground2.append([tempquad2[0]] * 3)
                 if (quad):
                     for idx, note in enumerate(quad):
                         if idx > 0:
                             prevNote = quad[idx - 1]
-                            qModel.learn(abs(prevNote - note), note, 1, note)
+                            qModel.learn(abs((prevNote) - (note)), note, 1, note)
         hmmModel.learn(obs, ground)
         hmmModel2.learn(obs2, ground2)
         return (hmmModel, hmmModel2, qModel)
@@ -76,14 +77,21 @@ def makeNgram(inputlist, n):
     return zip(*[inputlist[i:] for i in range(n)])
 
 if __name__ == "__main__":
-    assert(len(sys.argv) == 4) #want this to be the datapoints here
+    assert(len(sys.argv) == 5) #want this to be the datapoints here
     m = Model()
     hmmmod, hmmmod2, qmod = m.train()
     hmmpred = []
     hmmpred2 = []
     qpred = []
-    notes = map(collections.itemgetter(0), cPickle.load(file(sys.argv[1])))
-    for datapt in makeNgram(notes, 10): #handle datapoints properly instead of this
+    notes = cPickle.load(file(sys.argv[1]))
+    notes = notes["train"]
+    notes2 = []
+    for quad in notes:
+        for i in quad:
+            for j in i:
+                notes2.append(j)
+    print "notes: ", notes2
+    for datapt in makeNgram(notes2, 10): #handle datapoints properly instead of this
         print datapt
         hmmpred.append((makeHMMPred(datapt, hmmmod), None)) #dummy None values to work with the ks stats script
         hmmpred2.append((makeHMMPred(datapt, hmmmod2), None))
