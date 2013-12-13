@@ -36,6 +36,15 @@ class Model:
         for i in range(minNote, maxNote):
             actions.append(i)
         qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
+
+#HMM
+#1. It might be that the previous pitch played generates the observed note, so the previous pitch played could have been the states (this is different from the Markov model because of the 12-state space and the fact that I wasn't sampling but getting the maximum expectation of the distribution).
+#2. It might also be that a lot of four-note runs are produced by the certain class of these short sequences, so the first note of 4-note run, was tried as the hidden state configuration.
+#3. Note that a tritone interval sounds much the same anywhere, so it might have been the case that the next note is generated from the difference between the previous note and the note before that.
+
+#Qlearning
+#1. The previous note could be construed as a state from which actions, construed as notees, were generated.
+#2. The difference between previous note could also be construed as a state from which actions, construed as notes, were generated.
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
 #######CHANGE THIS BIT
@@ -75,9 +84,10 @@ if __name__ == "__main__":
     qpred = []
     notes = map(collections.itemgetter(0), cPickle.load(file(sys.argv[1])))
     for i in notes:
-        hmmpred.append(makeHMMPred(i, hmmmod))
-        hmmpred2.append(makeHMMPred(i, hmmmod2))
-        qpred.append(makeQLearningPred(i, qmod))
+        #handle datapoints properly now
+        hmmpred.append((makeHMMPred(i, hmmmod), None)) #dummy None values to work with the ks stats script
+        hmmpred2.append((makeHMMPred(i, hmmmod2), None))
+        qpred.append((makeQLearningPred(i, qmod), None))
     with open(sys.argv[2], 'w') as hmmf:
         cPickle.dump(hmmpred, hmmf)
     with open(sys.argv[3], 'w') as hmmf2:
