@@ -1,10 +1,13 @@
 import scipy, cPickle, sys, random
+from operator import itemgetter
 from scipy import stats
 import numpy as np
 
 assert len(sys.argv) == 3
-data = cPickle.load(file(sys.argv[1]))
-data2 = cPickle.load(file(sys.argv[2]))
+data = map(itemgetter(0), cPickle.load(file(sys.argv[1])))
+data2 = map(itemgetter(0), cPickle.load(file(sys.argv[2])))
+
+print data2
 #why is this so much easier goddamn it
 
 #1. ks_2samp on the pred vs uniform pred

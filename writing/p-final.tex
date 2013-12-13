@@ -34,10 +34,10 @@ So I have to test the predictor versus random, the predictor versus prediction f
 
 \subsection*{Methods}
 Training dataset: stored notes from a piano player playing, also JS Bach.
-Test dataset: the same piano player playing something different, extempore. %%how much data, what data, the 12 notes, etc
-The piano player could not see the predictions that the system makes in either case, because the test set would be silly otherwise. I tried showing it, and basically they just followed the prediction, no matter how silly it was.
+Test dataset: the same piano player playing something different, extempore. Since the core task of the system seems to be predicting the pitches themselves, irrespective to which octave they were in, the predictions are measured by whether they are the correct pitch, but irrespective of octave: that is, if we were supposed to get an F4 (according to the piano player's next note), and we actually got an F5, that was counted as correct.
+The piano player could not see the predictions that the system makes in either case, because the test set would not be a very good measure of the goodness of the prediction that way.
 
-Probability distributions were Laplace smoothed with $\alpha = 0.05$.
+Probability distributions were Laplace smoothed with $\alpha = 0.05$ before normalization.
 
 Markov Model: states are notes, to be used as baseline. I also did a higher-order Markov Model, to see if that helped, because it might be the case that more memory could 
 
@@ -51,16 +51,16 @@ Hidden states were tried:
 Trained forward-backwards. Predictions made by Viterbi, no variations on these because the training method itself shouldn't mess things up too bad: it was fast enough for the current system
 
 \subsubsection*{Reinforcement Learning State}
-Q-learning was done with epsilong-greedy method. Epsilon was 0.1, alpha was 0.2, gamma was 0.9. %%%explain what those are, why those
+Q-learning was done with epsilong-greedy method.
 1. Previous note.
 2. Difference between previous note.
 Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
 \subsection*{Results and Analysis}
-Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test. %%%figure out doing it properly
+Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test".
 
-Hypothesis I sustained, because there was a statistically significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a statistically significantly significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones. %datadatadata
-Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the models. %datattatatatat
+Hypothesis I should be sustained, because there was a statistically significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
+Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the models.
 However, qualitative (which predictions they did make), did make a difference. Here, once can tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
 
 \subsection*{Conclusion}
