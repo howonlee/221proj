@@ -54,8 +54,8 @@ class Model:
         qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
-                tempquad = map(lambda x: x - minNote, quad)
-                obs.append(tempquad[1:])
+                tempquad = map(lambda x: x - minNote, quad) #take this out for prevnote stuff
+                obs.append(tempquad[1:]) #this is for hmm: you can also do same thing for qlearning to change state that way
                 tempquad = map(lambda x: (x - minNote) % 12, quad)
                 ground.append(tempquad[:3])
                 if (quad):
