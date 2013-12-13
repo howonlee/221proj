@@ -3,7 +3,7 @@ from scipy import stats
 import numpy as np
 
 assert len(sys.argv) == 2
-data = sys.argv[1]
+data = cPickle.load(file(sys.argv[1]))
 
 uniform = [random.randint(1, 12) for i in len(data)]
 #goddamn it
