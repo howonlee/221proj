@@ -48,6 +48,7 @@ For a baseline, a Markov model (2-gram) was used, along with another, higher-ord
 \subsubsection*{Hidden Markov Model State}
 The observed states were considered the note pitches in the HMM model, since the interaction the player had with the system was by playing the notes.
 Different hidden states were tried:
+%%%%REEEEEAAAASSONS
 1. It might be that the previous pitch played generates the observed note, so the previous pitch played could have been the states (this is different from the Markov model because of the 12-state space and the fact that I wasn't sampling but getting the maximum expectation of the distribution).
 2. It might also be that a lot of four-note runs are produced by the certain class of these short sequences, so the first note of 4-note run, was tried as the hidden state configuration.
 3. Note that a tritone interval sounds much the same anywhere, so it might have been the case that the next note is generated from the difference between the previous note and the note before that.
@@ -55,18 +56,17 @@ Different hidden states were tried:
 Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough. %%%%GRAPHSSSSSS
 
 \subsubsection*{Reinforcement Learning State}
-%%%% second sweep
-Q-learning was done with epsilon-greedy method. Different states were tried:
-1. The previous note could be construed as a state from which actions were generated.
-2. Difference between previous note.
-Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
+Q-learning was done with epsilon-greedy method. Different states configurations were tried:
+%%%%REEEEEAAAASSONS
+1. The previous note could be construed as a state from which actions, construed as notees, were generated.
+2. The difference between previous note could also be construed as a state from which actions, construed as notes, were generated.
+We did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
 \subsection*{Results and Analysis}
 %%%%% graphs here (ALL the graphs)
 Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test $(p<0.05)$".
 
 Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
-%%%%pass 2
 Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models, again construed as a time series.
 However, qualitative (which predictions they did make), were significantly different. Here, once can also tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
 %%%conf mat pics here
