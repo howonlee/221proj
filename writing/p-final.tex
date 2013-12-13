@@ -12,8 +12,12 @@
 \section*{Real-Time Note Recommendation}
 
 \subsection*{Problem Definition}
+%%%%pretty picture here
 A system was made to try and predict a good next pitch to play within 12 possible tones in real time, given a training set of notes. Basically, a probability distribution was made out of a training set of notes and we tried to predict such that, if a person took the "predicted" pitches, they would play from a similar probability distribution.
 The data had to be gathered from a real piano player playing, so I got a piano player to create the training data and test out the system.
+
+%%%%lit review actually goes here, I guess
+
 \subsection*{Challenges And Unproductive Approaches}
 This is definitely something that must run in real-time, since ideally, the system would be used in real-time.
 As a task in itself, the task needs domain expertise, because the representation of music has to be transformed into something tractable.
@@ -40,7 +44,6 @@ Since the core task of the system seems to be predicting the pitches themselves,
 Probability distributions were Laplace smoothed with $\alpha = 0.05$ before normalization.
 
 For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram).
-%%%%% graphs here (ALL the graphs)
 
 \subsubsection*{Hidden Markov Model State}
 The observed states were considered the note pitches in the HMM model, since the interaction the player had with the system was by playing the notes.
@@ -59,22 +62,26 @@ Q-learning was done with epsilon-greedy method.
 Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
 \subsection*{Results and Analysis}
-Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test".
+%%%%% graphs here (ALL the graphs)
+Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test $(p<0.05)$".
 
-Hypothesis I should be sustained, because there was a statistically significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
-Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the models.
-However, qualitative (which predictions they did make), did make a difference. Here, once can tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
+Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
+Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models.
+However, qualitative (which predictions they did make), were significantly different. Here, once can tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
+%%%conf mats here
+
+%%%%pass 2
 
 \subsection*{Conclusion}
 A predictor for real-time note recommendation was made.
 Although it was not incredibly accurate, it was better than random, and it does seem to represent a probability distribution.
-A variety of models were considered.
+A variety of models were considered, with state configurations from a little bit of domain knowledge.
 These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made, and they were different from one another.
 
 Try the program out to see the qualitative difference, if you wish.
 
 \subsection*{Acknowledgement}
-Thanks to J. Li, who made the training and test data by playing the keyboard program.
+Thanks to J. Li, the piano player, and the CS221 teaching staff for much-appreciated help and advice.
 
 \begin{thebibliography}{9}
 
