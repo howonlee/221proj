@@ -43,21 +43,21 @@ Since the core task of the system seems to be predicting the pitches themselves,
 
 Probability distributions were Laplace smoothed with $\alpha = 0.05$ before normalization.
 
-For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram).
+For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram). These were trained and made prediction based on all the pitches (so F5 considered different than F4).
 
 \subsubsection*{Hidden Markov Model State}
 The observed states were considered the note pitches in the HMM model, since the interaction the player had with the system was by playing the notes.
 Different hidden states were tried:
-%%%% second sweep
-1. Previous note, because that could be construed as a hidden state, really
-2. First note of 4-note run, because it seemed that a lot of four-note runs produce a certain class of those short sequences (licks)
-3. Difference between previous note, because, although it was normalized, a tritone sounds much the same anywhere.
+1. It might be that the previous pitch played generates the observed note, so the previous pitch played could have been the states (this is different from the Markov model because of the 12-state space and the fact that I wasn't sampling but getting the maximum expectation of the distribution).
+2. It might also be that a lot of four-note runs are produced by the certain class of these short sequences, so the first note of 4-note run, was tried as the hidden state configuration.
+3. Note that a tritone interval sounds much the same anywhere, so it might have been the case that the next note is generated from the difference between the previous note and the note before that.
 
-Forward-backwards training was used. Predictions were made by Viterbi, no variations on these because the training method itself shouldn't mess things up too bad: it was fast enough for the current system
+Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough. %%%%GRAPHSSSSSS
 
 \subsubsection*{Reinforcement Learning State}
-Q-learning was done with epsilon-greedy method.
-1. Previous note.
+%%%% second sweep
+Q-learning was done with epsilon-greedy method. Different states were tried:
+1. The previous note could be construed as a state from which actions were generated.
 2. Difference between previous note.
 Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
@@ -68,7 +68,7 @@ Note that the statistical tests to verify or falsify the null hypothesis with re
 Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
 Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models.
 However, qualitative (which predictions they did make), were significantly different. Here, once can tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
-%%%conf mats here
+%%%conf mat pics here
 
 %%%%pass 2
 
