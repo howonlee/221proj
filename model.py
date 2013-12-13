@@ -95,7 +95,7 @@ def makeMM3Pred(datapoint, model):
     return val
 
 def makeHMMPred(datapoint, model):
-    best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint)) #this is probably not the right way to do it
+    best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint))
     return best[-1] + minNote
 
 def makeQLearningPred(datapoint, model):

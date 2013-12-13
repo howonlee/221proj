@@ -37,6 +37,7 @@ class Model:
         qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
+#######CHANGE THIS BIT
                 tempquad = map(lambda x: x - minNote, quad) #take this out for prevnote stuff
                 obs.append(tempquad[1:]) #this is for hmm: you can also do same thing for qlearning to change state that way
                 tempquad = map(lambda x: (x - minNote) % 12, quad)
@@ -50,6 +51,7 @@ class Model:
                             #q.learn(state1, action1, reward, state2)
                             qModel.learn(prevNote, note, 1, note)
         hmmModel.learn(obs, ground)
+#######STOP CHANGING HERE
         return (hmmModel, qModel)
 
 def normalizeVec(vec):
@@ -57,7 +59,7 @@ def normalizeVec(vec):
     return vec / vecsum
 
 def makeHMMPred(datapoint, model):
-    best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint)) #this is probably not the right way to do it
+    best, _2 = model.viterbi(map(lambda x: x - minNote, datapoint))
     return best[-1] + minNote
 
 def makeQLearningPred(datapoint, model):
@@ -68,12 +70,16 @@ if __name__ == "__main__":
     m = Model()
     hmmmod, qmod = m.train()
     hmmpred = []
+    hmmpred2 = []
     qpred = []
     notes = map(collections.itemgetter(0), cPickle.load(file(sys.argv[1])))
     for i in notes:
         hmmpred.append(makeHMMPred(i, hmmmod))
+        hmmpred2.append(makeHMMPred(i, hmmmod2))
         qpred.append(makeQLearningPred(i, qmod))
     with open(sys.argv[2], 'w') as hmmf:
         cPickle.dump(hmmpred, hmmf)
-    with open(sys.argv[3], 'w') as qf:
+    with open(sys.argv[3], 'w') as hmmf2:
+        cPickle.dump(hmmpred2, hmmf2)
+    with open(sys.argv[4], 'w') as qf:
         cPickle.dump(qpred, qf)
