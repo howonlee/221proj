@@ -66,11 +66,11 @@ Did not try first note of 4-note run because it seemed that this corresponded to
 Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test $(p<0.05)$".
 
 Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
-Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models.
-However, qualitative (which predictions they did make), were significantly different. Here, once can tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
+%%%%pass 2
+Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models, again construed as a time series.
+However, qualitative (which predictions they did make), were significantly different. Here, once can also tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
 %%%conf mat pics here
 
-%%%%pass 2
 
 \subsection*{Conclusion}
 A predictor for real-time note recommendation was made.
