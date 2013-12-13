@@ -6,8 +6,7 @@ assert len(sys.argv) == 2
 data = cPickle.load(file(sys.argv[1]))
 
 uniform = [random.randint(1, 12) for i in len(data)]
-#goddamn it
-jsbdata = cPickle.load(file("./data/JSB Chorales.pickle")) #put in actual jsb file
+jsbdata = cPickle.load(file("~/Dropbox/School/fall_13_14/cs221/proj/musicproj/data/JSB Chorales.pickle"))
 jsbdist = jsbdata['train']
 jsbdist = [filter(lambda x: len(x) == 4, l) for l in jsbdist]
 jsbdist = [filter(lambda x: not(np.allclose(list(x), [0.,0.,0.,0.])), l) for l in jsbdist]
