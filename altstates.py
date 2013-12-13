@@ -45,10 +45,12 @@ class Model:
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
                 tempquad = map(lambda x: x - minNote, quad)
-                obs.append(tempquad[1:])
-                obs2.append(tempquad[1:])
+                obs.append(tempquad[:])
+                obs2.append(tempquad[:])
                 tempquad2 = map(lambda x: (x - minNote) % 12, quad)
-                ground.append(tempquad2[:3]) #difference between prev note and note before that
+                notediff = [tempquad[0] - tempquad[1], tempquad[1] - tempquad[2], tempquad[2] - tempquad[3], tempquad[3] - tempquad[4]]
+                notediff = map(lambda x: abs(x), notediff)
+                ground.append(notediff) #difference between prev note and note before that
                 ground2.append(tempquad2[0] * 4)
                 if (quad):
                     for idx, note in enumerate(quad):
