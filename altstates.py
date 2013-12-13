@@ -64,6 +64,16 @@ def makeQLearningPred(datapoint, model):
     return model.chooseAction(datapoint[-1])
 
 if __name__ == "__main__":
-    assert(len(sys.argv) == 2) #want this to be the datapoints here
+    assert(len(sys.argv) == 4) #want this to be the datapoints here
     m = Model()
     hmmmod, qmod = m.train()
+    hmmpred = []
+    qpred = []
+    notes = map(collections.itemgetter(0), cPickle.load(file(sys.argv[1])))
+    for i in notes:
+        hmmpred.append(makeHMMPred(i, hmmmod))
+        qpred.append(makeQLearningPred(i, qmod))
+    with open(sys.argv[2], 'w') as hmmf:
+        cPickle.dump(hmmpred, hmmf)
+    with open(sys.argv[3], 'w') as qf:
+        cPickle.dump(qpred, qf)
