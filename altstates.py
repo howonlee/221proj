@@ -1,6 +1,6 @@
 #for alternate q and hmm state configs
 #I did this more manually previously, but script is better
-import scipy, cPickle, sys, random, collections
+import scipy, cPickle, sys, random, collections, itertools
 from scipy import stats
 import numpy as np
 from hmm import HMM
@@ -32,36 +32,31 @@ class Model:
         hmmModel2 = HMM(12, noteRange+1)
         obs = []
         ground = []
+        obs2 = []
+        ground2 = []
         actions = []
         for i in range(minNote, maxNote):
             actions.append(i)
         qModel = QLearner(actions, epsilon=0.1, alpha=0.2, gamma=0.9)
 
 #HMM
-#1. It might be that the previous pitch played generates the observed note, so the previous pitch played could have been the states (this is different from the Markov model because of the 12-state space and the fact that I wasn't sampling but getting the maximum expectation of the distribution).
 #2. It might also be that a lot of four-note runs are produced by the certain class of these short sequences, so the first note of 4-note run, was tried as the hidden state configuration.
 #3. Note that a tritone interval sounds much the same anywhere, so it might have been the case that the next note is generated from the difference between the previous note and the note before that.
-
-#Qlearning
-#1. The previous note could be construed as a state from which actions, construed as notees, were generated.
-#2. The difference between previous note could also be construed as a state from which actions, construed as notes, were generated.
         for ls in self.clusterData:
             for quadidx, quad in enumerate(ls):
-#######CHANGE THIS BIT
-                tempquad = map(lambda x: x - minNote, quad) #take this out for prevnote stuff
-                obs.append(tempquad[1:]) #this is for hmm: you can also do same thing for qlearning to change state that way
-                tempquad = map(lambda x: (x - minNote) % 12, quad)
-                ground.append(tempquad[:3])
+                tempquad = map(lambda x: x - minNote, quad)
+                obs.append(tempquad[1:])
+                obs2.append(tempquad[1:])
+                tempquad2 = map(lambda x: (x - minNote) % 12, quad)
+                ground.append(tempquad2[:3]) #difference between prev note and note before that
+                ground2.append(tempquad2[0] * 4)
                 if (quad):
                     for idx, note in enumerate(quad):
                         if idx > 0:
-                            currNote = note
                             prevNote = quad[idx - 1]
-                            #Q learning
-                            #q.learn(state1, action1, reward, state2)
-                            qModel.learn(prevNote, note, 1, note)
+                            qModel.learn(abs(prevNote - note), note, 1, note)
         hmmModel.learn(obs, ground)
-#######STOP CHANGING HERE
+        hmmModel2.learn(obs2, ground2)
         return (hmmModel, hmmModel2, qModel)
 
 def normalizeVec(vec):
@@ -73,7 +68,10 @@ def makeHMMPred(datapoint, model):
     return best[-1] + minNote
 
 def makeQLearningPred(datapoint, model):
-    return model.chooseAction(datapoint[-1])
+    return model.chooseAction(abs(datapoint[-1] - datapoint[-2]))
+
+def makeNgram(inputlist, n):
+    return zip(*[inputlist[i:] for i in range(n)])
 
 if __name__ == "__main__":
     assert(len(sys.argv) == 4) #want this to be the datapoints here
@@ -83,11 +81,11 @@ if __name__ == "__main__":
     hmmpred2 = []
     qpred = []
     notes = map(collections.itemgetter(0), cPickle.load(file(sys.argv[1])))
-    for i in notes:
-        #handle datapoints properly now
-        hmmpred.append((makeHMMPred(i, hmmmod), None)) #dummy None values to work with the ks stats script
-        hmmpred2.append((makeHMMPred(i, hmmmod2), None))
-        qpred.append((makeQLearningPred(i, qmod), None))
+    for datapt in makeNgram(notes, 10): #handle datapoints properly instead of this
+        print datapt
+        hmmpred.append((makeHMMPred(datapt, hmmmod), None)) #dummy None values to work with the ks stats script
+        hmmpred2.append((makeHMMPred(datapt, hmmmod2), None))
+        qpred.append((makeQLearningPred(datapt, qmod), None))
     with open(sys.argv[2], 'w') as hmmf:
         cPickle.dump(hmmpred, hmmf)
     with open(sys.argv[3], 'w') as hmmf2:

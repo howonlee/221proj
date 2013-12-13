@@ -63,16 +63,15 @@ Q-learning was done with epsilon-greedy method. Different states configurations 
 2. The difference between previous note could also be construed as a state from which actions, construed as notes, were generated.
 We did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
-\subsection*{Results}
+\subsection*{Results and Analysis}
 %%%%% GRAPHHHHHS
 Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test $(p<0.05)$".
 
 Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
 Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models, again construed as a time series.
-However, qualitative (which predictions they did make), were significantly different. Here, once can also tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
+However, qualitative (which predictions they did make), were significantly different. Here, once can also tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways. For a concrete example, look at the confusion matrices below, and the different pattern with which the Q-learner predicts notes versus the higher-order non-hidden Markov model.
+The reason why this happened seemed to be that the HMM still had the Markov property, and Q-Learning did not go on for long enough to satisfactorily explore the pitch state space in a way that did better than the other models. It may be worth later exploring structured models like PCFG's, which are better at creating structured predictions, since music is often structured like a context-free grammar.
 %%%CONF MAT PICCCCCCS
-
-\subsection*{Analysis}
 
 \subsection*{Conclusion}
 A predictor for real-time note recommendation was made.
