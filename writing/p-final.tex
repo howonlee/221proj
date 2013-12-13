@@ -53,7 +53,7 @@ Different hidden states were tried:
 2. It might also be that a lot of four-note runs are produced by the certain class of these short sequences, so the first note of 4-note run, was tried as the hidden state configuration.
 3. Note that a tritone interval sounds much the same anywhere, so it might have been the case that the next note is generated from the difference between the previous note and the note before that.
 
-Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough. %%%%GRAPHSSSSSS
+Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough. %%%%GRAPHSSSSSS of memory
 
 \subsubsection*{Reinforcement Learning State}
 Q-learning was done with epsilon-greedy method. Different states configurations were tried:
@@ -63,13 +63,13 @@ Q-learning was done with epsilon-greedy method. Different states configurations 
 We did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
 
 \subsection*{Results and Analysis}
-%%%%% graphs here (ALL the graphs)
+%%%%% GRAPHHHHHS
 Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test $(p<0.05)$".
 
 Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
 Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models, again construed as a time series.
 However, qualitative (which predictions they did make), were significantly different. Here, once can also tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways.
-%%%conf mat pics here
+%%%CONF MAT PICCCCCCS
 
 
 \subsection*{Conclusion}
