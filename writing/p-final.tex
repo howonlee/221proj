@@ -12,19 +12,16 @@
 \section*{Real-Time Note Recommendation}
 
 \subsection*{Problem Definition}
-Want to do this out of interest in music.
-Given previous set of notes, predict a next tone within 12 possible tones in real time.
-Predictions taken as drawing from a probability distribution. We want to know a good way to figure out the probability distribution.
-Want to do this real-time as perhaps a system for the person playing in realtime.
-Also want a real piano player's opinion on this, so I got J. Li
+A system was made to try and predict a good next pitch to play within 12 possible tones in real time, given a training set of notes. Basically, a probability distribution was made out of a training set of notes and we tried to predict such that, if a person took the "predicted" pitches, they would play from a similar probability distribution.
+The data had to be gathered from a real piano player playing, so I got a piano player to create the training data and test out the system.
 
 \subsection*{Challenges And Unproductive Approaches}
+This is definitely something that must run in real-time, since ideally, the system would be used in real-time.
 Actually quite hard as a task, given that I actually don't have any domain expertise that I knew about.
-I thought RBM would be a fairly interesting way of going about things, because it should be something like a good graphical method that would cluster things. RBM didn't work so well, too slow
 Non-laplace smoothing didn't make qualitative or quantitative difference, even thought I thought it would.
 
 \subsection*{Hypothesis}
-Testable hypotheses
+These are the hypotheses about the system that I made with reference to the problem statement and that I could test with experiments.
 \begin{enumerate}
     \item The predictor will do better than random
     \item The predictor will also do better than prediction from non-appropriate data (JS Bach)
@@ -48,10 +45,10 @@ Hidden states were tried:
 2. First note of 4-note run, because it seemed that a lot of four-note runs produce a certain class of those short sequences (licks)
 3. Difference between previous note, because, although it was normalized, a tritone sounds much the same anywhere.
 
-Trained forward-backwards. Predictions made by Viterbi, no variations on these because the training method itself shouldn't mess things up too bad: it was fast enough for the current system
+Forward-backwards training was used. Predictions were made by Viterbi, no variations on these because the training method itself shouldn't mess things up too bad: it was fast enough for the current system
 
 \subsubsection*{Reinforcement Learning State}
-Q-learning was done with epsilong-greedy method.
+Q-learning was done with epsilon-greedy method.
 1. Previous note.
 2. Difference between previous note.
 Did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state
@@ -74,7 +71,7 @@ Try the program out to see the qualitative difference, if you wish.
 \subsection*{Acknowledgement}
 Thanks to J. Li, who made the training and test data by playing the keyboard program.
 
-\begin{thebibliography}{9}%no more than 9 references
+\begin{thebibliography}{9}
 
 \bibitem{KneserNey}
 Ney, H., et al., On Structuring Probabilistic Dependences in Stochastic Language Modeling, in Computer, Speech and Language, 1994
