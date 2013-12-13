@@ -36,7 +36,7 @@ The piano player could not see the predictions that the system makes in either c
 
 Probability distributions were Laplace smoothed with $\alpha = 0.05$ before normalization.
 
-Markov Model: states are notes, to be used as baseline. I also did a higher-order Markov Model, to see if that helped, because it might be the case that more memory could 
+For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram).
 
 \subsubsection*{Hidden Markov Model State}
 Observed states are notes in HMM.
