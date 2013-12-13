@@ -29,6 +29,7 @@ class Model:
 
     def train(self):
         hmmModel = HMM(12, noteRange+1)
+        hmmModel2 = HMM(12, noteRange+1)
         obs = []
         ground = []
         actions = []
@@ -52,7 +53,7 @@ class Model:
                             qModel.learn(prevNote, note, 1, note)
         hmmModel.learn(obs, ground)
 #######STOP CHANGING HERE
-        return (hmmModel, qModel)
+        return (hmmModel, hmmModel2, qModel)
 
 def normalizeVec(vec):
     vecsum = vec.sum()
@@ -68,7 +69,7 @@ def makeQLearningPred(datapoint, model):
 if __name__ == "__main__":
     assert(len(sys.argv) == 4) #want this to be the datapoints here
     m = Model()
-    hmmmod, qmod = m.train()
+    hmmmod, hmmmod2, qmod = m.train()
     hmmpred = []
     hmmpred2 = []
     qpred = []

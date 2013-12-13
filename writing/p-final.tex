@@ -41,9 +41,11 @@ Since the core task of the system seems to be predicting the pitches themselves,
 
 Probability distributions were Laplace smoothed with $\alpha = 0.05$ before normalization.
 
-For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram). These were trained and made prediction based on all the pitches (so F5 considered different than F4).
+For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram). These were trained and made prediction based on all the pitches (so F5 considered different than F4). This is a good baseline, since the pitch prediction is fundamentally a time series task. A semimarkov assumption is not unwarranted as a first approximation, if we accept that there are certain short intervals that are much more probable than other ones.
 
-\subsubsection*{Hidden Markov Model State}
+\subsubsection*{Hidden Markov Model}
+It seems to be justifiable to say that there might be separate hidden and observable components in the music, since the same E might be played at different times for different reasons. Therefore, a hidden markov model was tried.
+
 The observed states were considered the note pitches in the HMM model, since the interaction the player had with the system was by playing the notes.
 Different hidden states were tried:
 %%%%REEEEEAAAASSONS
@@ -53,7 +55,8 @@ Different hidden states were tried:
 
 Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough. %%%%GRAPHSSSSSS of memory
 
-\subsubsection*{Reinforcement Learning State}
+\subsubsection*{Reinforcement Learning}
+It seems to be the case that there's a clearly defined conception of reward, as defined as the piano player actually hitting the predicted pitch. Therefore, Q-learning was tried.
 Q-learning was done with epsilon-greedy method. Different states configurations were tried:
 %%%%REEEEEAAAASSONS
 1. The previous note could be construed as a state from which actions, construed as notees, were generated.

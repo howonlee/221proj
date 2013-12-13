@@ -10,3 +10,4 @@ To actually play this:
 * The confusion matrix plotters are in the qFeature branch
 * I was going to have to tell you the Byzantine process for going over a previously recorded node played sequence and do over the q-learning with a different state config or the hmm with a different state config, but now you can use the script instead (altstates.py)
 * There is a KMeans module that is not used
+* There is another readme.md in the /usr/ folder, that is about the data
