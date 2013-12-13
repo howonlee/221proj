@@ -1,8 +1,10 @@
 #for alternate q and hmm state configs
 #I did this more manually previously, but script is better
-import scipy, cPickle, sys, random
+import scipy, cPickle, sys, random, collections
 from scipy import stats
 import numpy as np
+from hmm import HMM
+from q import QLearner
 
 maxNote = float("-inf")
 minNote = float("inf")
@@ -60,3 +62,8 @@ def makeHMMPred(datapoint, model):
 
 def makeQLearningPred(datapoint, model):
     return model.chooseAction(datapoint[-1])
+
+if __name__ == "__main__":
+    assert(len(sys.argv) == 2) #want this to be the datapoints here
+    m = Model()
+    hmmmod, qmod = m.train()
