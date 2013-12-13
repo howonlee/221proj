@@ -14,13 +14,12 @@
 \subsection*{Problem Definition}
 A system was made to try and predict a good next pitch to play within 12 possible tones in real time, given a training set of notes. Basically, a probability distribution was made out of a training set of notes and we tried to predict such that, if a person took the "predicted" pitches, they would play from a similar probability distribution.
 The data had to be gathered from a real piano player playing, so I got a piano player to create the training data and test out the system.
-
 \subsection*{Challenges And Unproductive Approaches}
 This is definitely something that must run in real-time, since ideally, the system would be used in real-time.
-Actually quite hard as a task, given that I actually don't have any domain expertise that I knew about.
-Non-laplace smoothing didn't make qualitative or quantitative difference, even thought I thought it would.
+As a task in itself, the task needs domain expertise, because the representation of music has to be transformed into something tractable.
+Non-laplace smoothing didn't make a qualitative or quantitative difference, even thought I thought it would.
 
-\subsection*{Hypothesis}
+\subsection*{Hypotheses}
 These are the hypotheses about the system that I made with reference to the problem statement and that I could test with experiments.
 \begin{enumerate}
     \item The predictor will do better than random
@@ -30,17 +29,23 @@ These are the hypotheses about the system that I made with reference to the prob
 So I have to test the predictor versus random, the predictor versus prediction from a non-appropriate dataset, and I have to compare the models in the prediction task in two ways: qualitative and quantitative.
 
 \subsection*{Methods}
-Training dataset: stored notes from a piano player playing, also JS Bach.
-Test dataset: the same piano player playing something different, extempore. Since the core task of the system seems to be predicting the pitches themselves, irrespective to which octave they were in, the predictions are measured by whether they are the correct pitch, but irrespective of octave: that is, if we were supposed to get an F4 (according to the piano player's next note), and we actually got an F5, that was counted as correct.
-The piano player could not see the predictions that the system makes in either case, because the test set would not be a very good measure of the goodness of the prediction that way.
+\subsubsection*{Training Dataset}
+The training dataset was stored notes from a piano player playing and notes from the music of JS Bach, both in MIDI pitch format. If the predictor trained on stored notes would do better than random on the test set, then that would satisfy the first hypothesis, and if the predictor trained on stored notes would do better than the predictor trained on JS Bach, that would satisfy the second hypothesis.
+\subsubsection*{Test Dataset}
+The test dataset was stored notes from the same piano player playing at a different time. The piano player could not see the predictions that the system makes in either case, because the test set would not be a very good measure of the goodness of the prediction that way.
+
+Since the core task of the system seems to be predicting the pitches themselves, irrespective to which octave they were in, the predictions are measured by whether they are the correct pitch, but irrespective of octave: that is, if we were supposed to get an F4 (according to the piano player's next note), and we actually got an F5, that was counted as correct.
+\subsubsection*{Models}
 
 Probability distributions were Laplace smoothed with $\alpha = 0.05$ before normalization.
 
 For a baseline, a Markov model (2-gram) was used, along with another, higher-order Markov model (3-gram).
+%%%%% graphs here (ALL the graphs)
 
 \subsubsection*{Hidden Markov Model State}
-Observed states are notes in HMM.
-Hidden states were tried:
+The observed states were considered the note pitches in the HMM model, since the interaction the player had with the system was by playing the notes.
+Different hidden states were tried:
+%%%% second sweep
 1. Previous note, because that could be construed as a hidden state, really
 2. First note of 4-note run, because it seemed that a lot of four-note runs produce a certain class of those short sequences (licks)
 3. Difference between previous note, because, although it was normalized, a tritone sounds much the same anywhere.
@@ -62,9 +67,9 @@ However, qualitative (which predictions they did make), did make a difference. H
 
 \subsection*{Conclusion}
 A predictor for real-time note recommendation was made.
-Although it was not incredible accurate, it was better than random.
+Although it was not incredibly accurate, it was better than random, and it does seem to represent a probability distribution.
 A variety of models were considered.
-These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made.
+These different models did not have a quantitative difference but they did have a qualitative difference on the predictions made, and they were different from one another.
 
 Try the program out to see the qualitative difference, if you wish.
 
