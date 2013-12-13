@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{graphicx}
 \usepackage[margin=1.5in]{geometry}
 
 \usepackage{hyperref}
@@ -13,8 +14,6 @@
 %%%%pretty picture here
 A system was made to try and predict a good next pitch to play within 12 possible tones in real time, given a training set of notes. Basically, a probability distribution was made out of a training set of notes and we tried to predict such that, if a person took the "predicted" pitches, they would play from a similar probability distribution.
 The data had to be gathered from a real piano player playing, so I got a piano player to create the training data and test out the system.
-
-%%%%lit review actually goes here, I guess
 
 \subsection*{Challenges And Unproductive Approaches}
 This is definitely something that must run in real-time, since ideally, the system would be used in real-time.
@@ -48,30 +47,48 @@ It seems to be justifiable to say that there might be separate hidden and observ
 
 The observed states were considered the note pitches in the HMM model, since the interaction the player had with the system was by playing the notes.
 Different hidden states were tried:
-%%%%REEEEEAAAASSONS
 1. It might be that the previous pitch played generates the observed note, so the previous pitch played could have been the states (this is different from the Markov model because of the 12-state space and the fact that I wasn't sampling but getting the maximum expectation of the distribution).
 2. It might also be that a lot of four-note runs are produced by the certain class of these short sequences, so the first note of 4-note run, was tried as the hidden state configuration.
 3. Note that a tritone interval sounds much the same anywhere, so it might have been the case that the next note is generated from the difference between the previous note and the note before that.
 
-Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough. %%%%GRAPHSSSSSS of memory
+Forward-backwards training was used. Predictions were made by Viterbi algorithm. Because I limited the state space, the HMM was fast enough.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.3]{memplot}
+  \caption{Memory Usage During Play Time for Piano Player Model}
+\end{figure}
 
 \subsubsection*{Reinforcement Learning}
 It seems to be the case that there's a clearly defined conception of reward, as defined as the piano player actually hitting the predicted pitch. Therefore, Q-learning was tried.
 Q-learning was done with epsilon-greedy method. Different states configurations were tried:
-%%%%REEEEEAAAASSONS
 1. The previous note could be construed as a state from which actions, construed as notees, were generated.
 2. The difference between previous note could also be construed as a state from which actions, construed as notes, were generated.
 We did not try first note of 4-note run because it seemed that this corresponded to a hidden state only, whereas it was plausible that the previous note and difference between previous note also corresponded to an observable state.
 
 \subsection*{Results and Analysis}
-%%%%% GRAPHHHHHS
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.5]{graphgrid}
+  \caption{Accuracy and F1 scores for models}
+\end{figure}
 Note that the statistical tests to verify or falsify the null hypothesis with respect to distributions was the Kolmogorov-Smirnov test, so if I say "significant", I mean, "significant with respect to the KS test $(p<0.05)$".
 
 Hypothesis I should be sustained, because there was a significant difference between the accuracy and average F1 scores (by class) of the model predictions and the JSB data. There is also a significant difference between the accuracy and average F1 scores of the model predictions and what would be predicted for random predictions drawn from a uniform probability distribution over the 12 possible tones.
 Hypothesis II not sustained for quantitative (accuracy measure on prediction), because there was not a significant difference between the accuracy or the average F1 of the models, again construed as a time series.
+
 However, qualitative (which predictions they did make), were significantly different, not only among the models but in between each of the state configurations of all the models. Here, once can also tell this by visual inspection of the confusion matrices of some of the models. To wit, the models got most things wrong, but it got those things wrong in different ways. For a concrete example, look at the confusion matrices below, and the different pattern with which the Q-learner predicts notes versus the higher-order non-hidden Markov model.
+
 The reason why this happened seemed to be that the HMM still had the Markov property, and Q-Learning did not go on for long enough to satisfactorily explore the pitch state space in a way that did better than the other models. It may be worth later exploring structured models like PCFG's, which are better at creating structured predictions, since music is often structured like a context-free grammar.
-%%%CONF MAT PICCCCCCS
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.3]{mm3ConfPlot}
+  \caption{Confusion Matrix for Higher-Order Markov Model}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.3]{qConfPlot}
+  \caption{Confusion Matrix for Q-Learning Model}
+\end{figure}
 
 \subsection*{Conclusion}
 A predictor for real-time note recommendation was made.
@@ -84,7 +101,7 @@ Try the program out to see the qualitative difference, if you wish.
 \subsection*{Acknowledgement}
 Thanks to J. Li, the piano player, and the CS221 teaching staff for much-appreciated help and advice.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
 \bibitem{KneserNey}
 Ney, H., et al., On Structuring Probabilistic Dependences in Stochastic Language Modeling, in Computer, Speech and Language, 1994
